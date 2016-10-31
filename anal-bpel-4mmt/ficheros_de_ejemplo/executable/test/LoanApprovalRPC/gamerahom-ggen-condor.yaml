@@ -1,0 +1,36 @@
+populationSize: 10
+
+executor: !!gamera.exec.bpel.condor.CondorBPELExecutor
+  testSuite: loanApprovalProcess-velocity.bpts
+  originalProgram: loanApprovalProcess.bpel
+  remoteHost: condor.example.com
+  remoteUser: user
+  remoteDirectory: /home/user/condor_ggen
+  email: user@example.com
+
+geneticOperators:
+  - !!gamera.ggen.genetic.CrossoverOperator      {probability: 0.4}
+  - !!gamera.ggen.genetic.MutationOperator       {mutationRange: 10, probability: 0.6}
+
+individualGenerators:
+  !!gamera.ggen.generate.RandomGenerator {} : {percent: 0.2}
+
+selectionOperators:
+  !!gamera.ggen.select.UniformRandomSelection {} : {percent: 0.3}
+  !!gamera.ggen.select.RouletteSelection  {} : {percent: 0.7}
+
+terminationConditions:
+  - !!gamera.ggen.term.PercentAllMutantsCondition {percent: 0.95}
+  - !!gamera.ggen.term.GenerationCountCondition   {count: 5}
+  - !!gamera.ggen.term.StagnationMaximumFitness   {count: 3}
+  - !!gamera.ggen.term.StagnationAverageFitness   {count: 3}
+  
+loggers:
+  - !!gamera.ggen.log.MessageLogger {console: true, file: }
+  - !!gamera.ggen.log.FullHistoryReportLogger {file: history.txt}
+
+parser: !!testgen.parsers.spec.xtext.integration.XtextSpecParser {spec: data.spec}
+ 
+formatter: !!testgen.formatters.VelocityFormatter {}
+
+strategy: !!testgen.strategies.random.UniformRandomStrategy {}

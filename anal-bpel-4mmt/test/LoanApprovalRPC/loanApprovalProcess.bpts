@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (C) 2009 Antonio García Domínguez
+
+   This file is part of the LoanApprovalRPC composition in the UCASE
+   WS-BPEL composition repository.
+
+   This program is free software: you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<tes:testSuite
+   xmlns:ap="http://j2ee.netbeans.org/wsdl/ApprovalService"
+   xmlns:as="http://j2ee.netbeans.org/wsdl/ConcreteAssessorService"
+   xmlns:sp="http://j2ee.netbeans.org/wsdl/ConcreteLoanService"
+   xmlns:gen="http://j2ee.netbeans.org/wsdl/loanServicePT"
+   xmlns:pr="http://enterprise.netbeans.org/bpel/LoanApproval_V2/loanApprovalProcess"
+   xmlns:tes="http://www.bpelunit.org/schema/testSuite">
+
+  <tes:name>loanApprovalProcess</tes:name>
+  <tes:baseURL>http://localhost:7777/ws</tes:baseURL>
+
+  <tes:deployment>
+    <tes:put name="loanApprovalProcess" type="activebpel">
+      <tes:wsdl>LoanService.wsdl</tes:wsdl>
+      <tes:property name="BPRFile">LoanApprovalRPC.bpr</tes:property>
+    </tes:put>
+    <tes:partner name="approver" wsdl="ApprovalService.wsdl"/>
+    <tes:partner name="assessor" wsdl="AssessorService.wsdl"/>
+  </tes:deployment>
+
+  <tes:testCases>
+    <tes:testCase name="SmallAmountLowRisk" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="sp:LoanService"
+            port="LoanServicePort"
+            operation="request">
+
+          <tes:send fault="false">
+            <tes:data>
+              <firstName>B</firstName>
+              <name>B A</name>
+              <amount>1500</amount>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>accept</tes:expression>
+              <tes:value>'true'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+
+      <tes:partnerTrack name="assessor">
+        <tes:receiveSend
+            service="as:RiskAssessmentService"
+            port="RiskAssessmentPort"
+            operation="check">
+          <tes:receive fault="false"/>
+          <tes:send fault="false">
+            <tes:data>
+              <level>low</level>
+            </tes:data>
+          </tes:send>
+        </tes:receiveSend>
+      </tes:partnerTrack>
+
+      <tes:partnerTrack name="approver"/>
+    </tes:testCase>
+
+    <tes:testCase name="SmallAmountHighRiskOK" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="sp:LoanService"
+            port="LoanServicePort"
+            operation="request">
+
+          <tes:send fault="false">
+            <tes:data>
+              <name>B A</name>
+              <firstName>B</firstName>
+              <amount>1500</amount>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>accept</tes:expression>
+              <tes:value>'true'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+
+      <tes:partnerTrack name="assessor">
+        <tes:receiveSend
+            service="as:RiskAssessmentService"
+            port="RiskAssessmentPort"
+            operation="check">
+          <tes:receive fault="false"/>
+          <tes:send fault="false">
+            <tes:data>
+              <level>high</level>
+            </tes:data>
+          </tes:send>
+        </tes:receiveSend>
+      </tes:partnerTrack>
+
+      <tes:partnerTrack name="approver">
+        <tes:receiveSend
+            service="ap:ApprovalService"
+            port="ApprovalServicePort"
+            operation="approve">
+          <tes:receive fault="false"/>
+          <tes:send fault="false">
+            <tes:data>
+              <accept>true</accept>
+            </tes:data>
+          </tes:send>
+        </tes:receiveSend>
+      </tes:partnerTrack>
+
+    </tes:testCase>
+
+    <tes:testCase name="SmallAmountHighRiskRejected" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="sp:LoanService"
+            port="LoanServicePort"
+            operation="request">
+
+          <tes:send fault="false">
+            <tes:data>
+              <firstName>B</firstName>
+              <name>B A</name>
+              <amount>1500</amount>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>accept</tes:expression>
+              <tes:value>'false'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+
+      <tes:partnerTrack name="assessor">
+        <tes:receiveSend
+            service="as:RiskAssessmentService"
+            port="RiskAssessmentPort"
+            operation="check">
+          <tes:receive fault="false"/>
+          <tes:send fault="false">
+            <tes:data>
+              <level>high</level>
+            </tes:data>
+          </tes:send>
+        </tes:receiveSend>
+      </tes:partnerTrack>
+
+      <tes:partnerTrack name="approver">
+        <tes:receiveSend
+            service="ap:ApprovalService"
+            port="ApprovalServicePort"
+            operation="approve">
+          <tes:receive fault="false"/>
+          <tes:send fault="false">
+            <tes:data>
+              <accept>false</accept>
+            </tes:data>
+          </tes:send>
+        </tes:receiveSend>
+      </tes:partnerTrack>
+
+    </tes:testCase>
+
+    <tes:testCase name="LargeAmountOK" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="sp:LoanService"
+            port="LoanServicePort"
+            operation="request">
+
+          <tes:send fault="false">
+            <tes:data>
+              <firstName>B</firstName>
+              <name>B A</name>
+              <amount>150000</amount>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>accept</tes:expression>
+              <tes:value>'true'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+
+      <tes:partnerTrack name="assessor"/>
+
+      <tes:partnerTrack name="approver">
+        <tes:receiveSend
+            service="ap:ApprovalService"
+            port="ApprovalServicePort"
+            operation="approve">
+          <tes:receive fault="false"/>
+          <tes:send fault="false">
+            <tes:data>
+              <accept>true</accept>
+            </tes:data>
+          </tes:send>
+        </tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+
+    <tes:testCase name="LargeAmountRejected" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="sp:LoanService"
+            port="LoanServicePort"
+            operation="request">
+
+          <tes:send fault="false">
+            <tes:data>
+              <firstName>B</firstName>
+              <name>B A</name>
+              <amount>150000</amount>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>accept</tes:expression>
+              <tes:value>'false'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+
+      <tes:partnerTrack name="assessor"/>
+
+      <tes:partnerTrack name="approver">
+        <tes:receiveSend
+            service="ap:ApprovalService"
+            port="ApprovalServicePort"
+            operation="approve">
+          <tes:receive fault="false"/>
+          <tes:send fault="false">
+            <tes:data>
+              <accept>false</accept>
+            </tes:data>
+          </tes:send>
+        </tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+  </tes:testCases>
+</tes:testSuite>

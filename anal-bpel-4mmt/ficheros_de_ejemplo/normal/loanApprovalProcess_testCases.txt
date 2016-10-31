@@ -1,0 +1,31 @@
+----------
+firstName - B
+name - B A
+amount - 1500
+tes:expression - accept
+tes:value - 'true'
+level - low
+----------
+name - B A
+firstName - B
+amount - 1500
+tes:expression - accept
+tes:value - 'true'
+level - high
+accept - true
+----------
+firstName - B
+name - B A
+amount - 1500
+tes:expression - accept
+tes:value - 'false'
+level - high
+accept - false
+----------
+firstName - B
+name - B A
+amount - 150000
+tes:expression - accept
+tes:value - 'true'
+accept - true
+----------

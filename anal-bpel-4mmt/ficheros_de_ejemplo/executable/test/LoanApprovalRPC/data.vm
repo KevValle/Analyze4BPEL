@@ -1,0 +1,5 @@
+#set($riskLevel = ["high", "low", "low"])
+#set($accepted = ["true", "false", "false"])
+#set($cantidad = [201855, 348511, 148403])
+#set($surName = ["Gomez", "Perez", "Gomez"])
+#set($firstName = ["Manuel", "Antonio", "Manuel"])

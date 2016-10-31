@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+   This sample is based on the sample LoanApproval composition in the
+   OASIS WS-BPEL 2.0 standard. The copyright notice is as follows:
+
+     Copyright © OASIS® 1993-2007. All Rights Reserved. OASIS
+     trademark, IPR and other policies apply.
+
+     This document and translations of it may be copied and furnished
+     to others, and derivative works that comment on or otherwise
+     explain it or assist in its implementation may be prepared,
+     copied, published and distributed, in whole or in part, without
+     restriction of any kind, provided that the above copyright notice
+     and this paragraph are included on all such copies and derivative
+     works. However, this document itself may not be modified in any
+     way, such as by removing the copyright notice or references to
+     OASIS, except as needed for the purpose of developing OASIS
+     specifications, in which case the procedures for copyrights
+     defined in the OASIS Intellectual Property Rights document must
+     be followed, or as required to translate it into languages other
+     than English.
+
+   In addition, this particular derivative work is licensed under the GPLv3:
+
+     Copyright (C) 2008-2009 Antonio García Domínguez
+
+     This file is part of the LoanApprovalRPC composition in the
+     UCASE WS-BPEL composition repositor.
+
+     This program is free software: you can redistribute it and/or
+     modify it under the terms of the GNU General Public License as
+     published by the Free Software Foundation, either version 3 of
+     the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+--><process xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:ns1="http://j2ee.netbeans.org/wsdl/loanServicePT" xmlns:tns="http://enterprise.netbeans.org/bpel/LoanApproval_V2/loanApprovalProcess" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="loanApprovalProcess" targetNamespace="http://enterprise.netbeans.org/bpel/LoanApproval_V2/loanApprovalProcess">
+   <import importType="http://schemas.xmlsoap.org/wsdl/" location="loanServicePT.wsdl" namespace="http://j2ee.netbeans.org/wsdl/loanServicePT"/>
+   <import importType="http://schemas.xmlsoap.org/wsdl/" location="AssessorService.wsdl" namespace="http://j2ee.netbeans.org/wsdl/ConcreteAssessorService"/>
+   <import importType="http://schemas.xmlsoap.org/wsdl/" location="LoanService.wsdl" namespace="http://j2ee.netbeans.org/wsdl/ConcreteLoanService"/>
+   <import importType="http://schemas.xmlsoap.org/wsdl/" location="ApprovalService.wsdl" namespace="http://j2ee.netbeans.org/wsdl/ApprovalService"/>
+   <partnerLinks>
+      <partnerLink xmlns:tns="http://j2ee.netbeans.org/wsdl/ApprovalService" name="approver" partnerLinkType="tns:approvalServicePLT" partnerRole="approvalServiceRole"/>
+      <partnerLink xmlns:tns="http://j2ee.netbeans.org/wsdl/ConcreteAssessorService" name="assessor" partnerLinkType="tns:riskAssessmentPLT" partnerRole="riskAssessmentRole"/>
+      <partnerLink xmlns:tns="http://j2ee.netbeans.org/wsdl/ConcreteLoanService" myRole="loanServiceRoleType" name="customer" partnerLinkType="tns:loanServicePLT"/>
+   </partnerLinks>
+   <variables>
+      <variable messageType="ns1:riskAssessmentMessage" name="risk"/>
+      <variable messageType="ns1:approvalMessage" name="approval"/>
+      <variable xmlns:tns="http://j2ee.netbeans.org/wsdl/loanServicePT" messageType="tns:creditInformationMessage" name="request"/>
+   </variables>
+   <faultHandlers>
+      <catch faultMessageType="ns1:errorMessage" faultName="ns1:loanProcessFault" faultVariable="error">
+         <reply faultName="ns1:unableToHandleRequest" name="Reply1" operation="request" partnerLink="customer" portType="ns1:loanServicePT" variable="error"/>
+      </catch>
+   </faultHandlers>
+   <sequence>
+      <receive xmlns:tns="http://j2ee.netbeans.org/wsdl/loanServicePT" createInstance="yes" name="ReceiveRequest" operation="request" partnerLink="customer" portType="tns:loanServicePT" variable="request"/>
+      
+      <reply name="ReportApproval" operation="request" partnerLink="customer" portType="ns1:loanServicePT" variable="approval"/>
+   </sequence>
+</process>

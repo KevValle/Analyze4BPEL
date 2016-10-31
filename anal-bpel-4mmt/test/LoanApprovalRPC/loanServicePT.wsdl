@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (C) 2009 Antonio García Domínguez
+
+   This file is part of the LoanApprovalRPC composition in the UCASE
+   WS-BPEL composition repository.
+
+   This program is free software: you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<definitions name="loanServicePT" targetNamespace="http://j2ee.netbeans.org/wsdl/loanServicePT"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:tns="http://j2ee.netbeans.org/wsdl/loanServicePT"
+    xmlns:ns0="http://xml.netbeans.org/schema/loanServicePT"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://j2ee.netbeans.org/wsdl/loanServicePT"
+            xmlns:tns="http://j2ee.netbeans.org/wsdl/loanServicePT"
+            elementFormDefault="qualified">
+	    <xsd:simpleType name="RiskType">
+	      <xsd:restriction base="xsd:string">
+		<xsd:enumeration value="high"/>
+		<xsd:enumeration value="low"/>
+	      </xsd:restriction>
+	    </xsd:simpleType>
+            <xsd:element name="errorCodeElem" type="xsd:integer"/>
+        </xsd:schema>
+    </types>
+    <message name="creditInformationMessage">
+        <part name="firstName" type="xsd:string"/>
+        <part name="name" type="xsd:string"/>
+        <part name="amount" type="xsd:integer"/>
+    </message>
+    <message name="approvalMessage">
+        <part name="accept" type="xsd:boolean"/>
+    </message>
+    <message name="errorMessage">
+        <part name="errorCode" element="tns:errorCodeElem"/>
+    </message>
+    <message name="riskAssessmentMessage">
+        <part name="level" type="tns:RiskType"/>
+    </message>
+    <portType name="loanServicePT">
+        <operation name="request">
+            <input name="input1" message="tns:creditInformationMessage"/>
+            <output name="output1" message="tns:approvalMessage"/>
+            <fault name="unableToHandleRequest" message="tns:errorMessage"/>
+        </operation>
+    </portType>
+    <portType name="riskAssessmentPT">
+        <operation name="check">
+            <input name="input1" message="tns:creditInformationMessage"/>
+            <output name="output1" message="tns:riskAssessmentMessage"/>
+            <fault name="loanProcessFault" message="tns:errorMessage"/>
+        </operation>
+    </portType>
+    <portType name="loanApprovalPT">
+        <operation name="approve">
+            <input name="input1" message="tns:creditInformationMessage"/>
+            <output name="output1" message="tns:approvalMessage"/>
+            <fault name="loanProcessFault" message="tns:errorMessage"/>
+        </operation>
+    </portType>
+</definitions>

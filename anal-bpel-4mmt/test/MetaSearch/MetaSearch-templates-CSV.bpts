@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Author: María Azahara Camacho Magriñán
+	File: MetaSearchTest-CSV.bpts
+-->
+<tes:testSuite xmlns:msn="http://schemas.microsoft.com/MSNSearch/2005/09/fex" xmlns:met="http://examples.bpelunit.org/MetaSearch" xmlns:tes="http://www.bpelunit.org/schema/testSuite" xmlns:goog="http://examples.bpelunit.org/GoogleBridge">
+  <tes:name>MetaSearchTest</tes:name>
+  <tes:baseURL>http://localhost:7777/ws</tes:baseURL>
+  <tes:deployment>
+    <tes:put name="MetaSearch" type="activebpel">
+      <tes:wsdl>MetaSearch.wsdl</tes:wsdl>
+      <tes:property name="BPRFile">MetaSearch.bpr</tes:property>
+    </tes:put>
+    <tes:partner name="Google" wsdl="GoogleBridge.wsdl"/>
+    <tes:partner name="MSN" wsdl="msnsearch.wsdl"/>
+  </tes:deployment>
+  
+  <tes:testCases>
+
+    <tes:testCase name="MainTemplate" basedOn="" abstract="false" vary="true">
+      <tes:setUp>
+        <tes:dataSource type="csv" src="data.csv">
+          <tes:property name="separator">,</tes:property>
+        </tes:dataSource>
+      </tes:setUp>
+      
+      <tes:clientTrack>
+		<tes:sendReceive service="met:MetaSearch" 
+		port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+		  <tes:send fault="false" delay="$Client_Delay">
+			<tes:template>
+			  <met:MetaSearchProcessRequest>
+				<met:query>$Query</met:query>
+				<met:language>$Lenguaje</met:language>
+				<met:country>$Country</met:country>
+				<met:maxResults>$Max_Results</met:maxResults>
+			  </met:MetaSearchProcessRequest>
+			</tes:template>
+		  </tes:send>
+		  <tes:receive fault="false">
+			<tes:condition>
+			  <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+			  <tes:value>number($Count)</tes:value>
+			</tes:condition>
+		  </tes:receive>
+		</tes:sendReceive>
+      </tes:clientTrack>
+      
+      <tes:partnerTrack name="Google">
+		<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+		  <tes:send fault="false" delay="$Google_Delay">
+			<tes:template>
+			  <goog:SearchEngineResultList>
+					<result>
+					 <url>$url1</url>
+					 <title>$title1</title>
+					 <snippet>$snippet1</snippet>
+					</result>
+					<result>
+					 <url>$url2</url>
+					 <title>$title2</title>
+					 <snippet>$snippet2</snippet>
+					</result>
+					<result>
+					 <url>$url3</url>
+					 <title>$title3</title>
+					 <snippet>$snippet3</snippet>
+					</result>
+			  </goog:SearchEngineResultList>
+			</tes:template>
+		  </tes:send>
+		  <tes:receive fault="false"/>
+		</tes:receiveSend>
+      </tes:partnerTrack>
+      
+      <tes:partnerTrack name="MSN">
+			<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+			  <tes:send fault="false" delay="$MSN_Delay">
+					<tes:template>
+					  <msn:SearchResponse>
+						<msn:Response>
+						  <msn:Responses>
+							<msn:SourceResponse>
+							  <msn:Source>$Source</msn:Source>
+							  <msn:Offset>$Offset</msn:Offset>
+							  <msn:Total>$Total</msn:Total>
+							  <msn:Results>
+								<msn:Result>
+								  <msn:Title>$title_msn1</msn:Title>
+								  <msn:Description>$description1</msn:Description>
+								  <msn:Url>$url_msn1</msn:Url>
+								</msn:Result>
+								<msn:Result>
+								  <msn:Title>$title_msn2</msn:Title>
+								  <msn:Description>$description2</msn:Description>
+								  <msn:Url>$url_msn2</msn:Url>
+								</msn:Result>
+								<msn:Result>
+								  <msn:Title>$title_msn3</msn:Title>
+								  <msn:Description>$description3</msn:Description>
+								  <msn:Url>$url_msn3</msn:Url>
+								</msn:Result>
+							  </msn:Results>
+							</msn:SourceResponse>
+						  </msn:Responses>
+						</msn:Response>
+					  </msn:SearchResponse>
+					</tes:template>			
+				</tes:send>
+			  <tes:receive fault="false"/>
+			</tes:receiveSend>
+      </tes:partnerTrack>
+      
+    </tes:testCase>
+    
+  </tes:testCases>
+  
+</tes:testSuite>

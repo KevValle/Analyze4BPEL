@@ -1,0 +1,431 @@
+#set($meta = [
+	["Philipp Lahm", "de", "DE", 3],
+	["Philipp Lahm", "de", "DE", 3],
+	["Philipp Lahm", "de", "DE", 6],
+	["Philipp Lahm", "de", "DE", 6],
+	["Philipp Lahm", "de", "DE", 4],
+	["Philipp Lahm", "de", "DE", 3],
+	["Philipp Lahm", "de", "DE", 4],
+	["Philipp Lahm", "de", "DE", 3],
+	["Philipp Lahm", "", "DE", 2],
+	["Philipp Lahm", "de", "DE", -1],
+	["Philipp Lahm", "de", "DE", 6],
+	["Philipp Lahm", "de", "DE", 6],
+	["Philipp Lahm", "de", "DE", 10],
+	["Philipp Lahm", "de", "DE", 10],
+	["Philipp Lahm", "de", "DE", 12],
+	["Philipp Lahm", "de", "DE", 5],
+	["Philipp Lahm", "de", "DE", 2],
+	["Philipp Lahm", "de", "DE", 2],
+	["Philipp Lahm", "de", "DE", 10], 
+	["Philipp Lahm", "", "DE", 10],
+	["Philipp Lahm", "", "DE", 10],
+	["Philipp Lahm", "de", "DE", 6],
+	["Philipp Lahm", "de", "DE", 6]
+])
+#set($numeric = [3, 3, 6, 6, 4, 3, 1, 3, 2, 0, 3, 3, 10, 10, 11, 5, 2, 2, 2, 2, 2, 0, 0])
+#set($conditions = [
+	[],
+	[],
+	[
+		[1,"Title1google"],
+		[2,"Title1msn"]
+	],
+	[
+		[1,"Title1google"],
+		[2,"Title1msn"]
+	],
+	[
+		[1,"Title1google"],
+		[2,"Title1msn"],
+		[3,"Title2msn"],
+		[4,"Title3msn"]
+	],
+	[
+		[1,"Title1google"],
+		[2,"Title1msn"],
+		[3,"Title2google"]
+	],
+	[
+		[1,"Title1google"]
+	],
+	[],
+	[],
+	[],
+	[
+		[1,"Title1google"]
+	],
+	[
+		[1,"Title1google"]
+	],
+	[
+		[1,"Title1google"],
+		[2,"Title1msn"],
+		[3,"Title2google"],
+		[4,"Title2msn"],
+		[5,"Title3google"],
+		[6,"Title3msn"],
+		[7,"Title4google"],
+		[8,"Title4msn"],
+		[9,"Title5google"],
+		[10,"Title6google"]
+	],
+	[
+		[1,"Title1google"],
+		[2,"Title1msn"],
+		[3,"Title2google"],
+		[4,"Title2msn"],
+		[5,"Title3google"],
+		[6,"Title3msn"],
+		[7,"Title4google"],
+		[8,"Title4msn"],
+		[9,"Title5google"],
+		[10,"Title6google"]
+	],
+	[],
+	[
+		[1,"Title1google"]
+	],
+	[
+		[2,"Title2msn"]
+	],
+	[
+		[2,"Title2msn"]
+	],
+	[],
+	[
+		[2,"Title3msn"]
+	],
+	[
+		[2,"Title3msn"]
+	],
+	[],
+	[]
+])
+#set($Client_Delay = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+#set($googleAvailable = ["true", "false", "true", "true", "true", "true", "true", "false", "false", "true", "true", "true", "true", "true", "true", "true", "false", "false", "true", "false", "false", "true", "true"])
+#set($Google_Delay = [0,0,0,2,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2])
+#set($googleValues = [
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"]
+	],
+	[],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"]
+	],
+	[],
+	[],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url1google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"],
+		["url4google", "Title4google", "Snippet4google", "false"],
+		["url5google", "Title5google", "Snippet5google", "false"],
+		["url6google", "Title6google", "Snippet6google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url3google", "Title3google", "Snippet3google", "false"],
+		["url4google", "Title4google", "Snippet4google", "false"],
+		["url5google", "Title5google", "Snippet5google", "false"],
+		["url6google", "Title6google", "Snippet6google", "false"]
+	],
+	[
+		["url1google", "Title1google", "url1msn", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url2google", "Title3google", "Snippet3google", "false"],
+		["url4google", "Title4google", "Snippet4google", "false"],
+		["url5google", "Title5google", "Snippet5google", "false"],
+		["url5google", "Title6google", "Snippet6google", "false"],
+		["url7google", "Title7google", "Snippet7google", "false"],
+		["url8msn", "Title8google", "Snippet8google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url2google", "Title3google", "Snippet3google", "false"]
+	],
+	[],
+	[],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "false"],
+		["url2google", "Title3google", "Snippet3google", "false"]
+	],
+	[],
+	[],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "true", "Google"],
+		["url3google", "Title3google", "Snippet3google", "true", ""],
+		["url4google", "Title4google", "Snippet4google", "false"],
+		["url4google", "Title5google", "Snippet5google", "false"],
+		["url4google", "Title6google", "Snippet6google", "false"]
+	],
+	[
+		["url1google", "Title1google", "Snippet1google", "false"],
+		["url2google", "Title2google", "Snippet2google", "true", "Google"],
+		["url3google", "Title3google", "Snippet3google", "true", ""],
+		["url4google", "Title4google", "Snippet4google", "false"],
+		["url4google", "Title5google", "Snippet5google", "false"],
+		["url4google", "Title6google", "Snippet6google", "false"]
+	]
+])
+#set($msnAvailable = ["false", "true", "true", "true", "true", "true", "true", "true", "true", "false", "true", "true", "true", "true", "true", "true", "true", "true", "false", "true", "true", "true", "true"])
+#set($MSN_Delay = [0,0,2,0,0,0,0,0,0,0,0,0,2,0,0,0,2,0,0,2,0,2,0])
+#set($msnResponse = ["true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "true", "false", "false"])
+#set($msnResponseValues = [
+	[],
+	[
+		["Web",0,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"],
+				["Title3msn",["Snippet3msn"],"http://url3msn","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"],
+				["Title3msn",["Snippet3msn"],"http://url3msn","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"],
+				["Title3msn",["Snippet3msn"],"http://url3msn","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"],
+				["Title3msn",["Snippet3msn"],"http://url3msn","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"],
+				["Title3msn",["Snippet3msn"],"http://url3msn","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1 - from MSN",["Snippet1 - from MSN"],"http://url1google","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1msn",[""],"http://url1msn","false"],
+				["Title2msn",[""],"http://url2msn","false"],
+				["Title3msn",[""],"http://url3msn","false"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"]
+			]
+		]
+	],
+	[],
+	[
+		["Web",0,
+			[
+				["Title1 - from MSN",["Snippet1 - from MSN"],"http://url1google","true"],
+				["Title2 - from MSN",["Snippet2 - from MSN"],"http://url2google","true"],
+				["Title3 - from MSN",["Snippet3 - from MSN"],"http://url3google","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1 - from MSN",["Snippet1 - from MSN"],"http://url1google","true"],
+				["Title2 - from MSN",["Snippet2 - from MSN"],"http://url2google","true"],
+				["Title3 - from MSN",["Snippet3 - from MSN"],"http://url3google","true"]
+			]
+		]
+	],
+	[
+		["Web",-3,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"],
+				["Title3msn",["Snippet3msn"],"http://url3msn","true"],
+				["Title4msn",["Snippet4msn"],"http://url4msn","true"]
+			]
+		]
+	],
+	[
+		["Web",-3,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"],
+				["Title3msn",["Snippet3msn"],"http://url3msn","true"],
+				["Title4msn",["Snippet4msn"],"http://url4msn","true"]
+			]
+		]
+	],
+	[
+		["Web",-10,
+			[
+				["Title1 - from MSN",["Snippet1 - from MSN"],"http://url1msn","true"],
+				["Title2 - from MSN",["Snippet2 - from MSN"],"http://url2msn","true"],
+				["Title3 - from MSN",["Snippet3 - from MSN"],"http://url3google","true"],
+				["Title4 - from MSN",["Snippet4 - from MSN"],"http://url2google","true"],
+				["Title5 - from MSN",["Snippet5 - from MSN"],"http://url2msn","true"],
+				["Title6 - from MSN",["Snippet6 - from MSN"],"http://url6msn","true"],
+				["Title7 - from MSN",["Snippet7 - from MSN"],"http://url7google","true"],
+				["Title8 - from MSN",["Snippet8 - from MSN"],"http://url8msn","true"],
+				["Title9 - from MSN",["Snippet9 - from MSN"],"http://url9msn","true"],
+				["Title10 - from MSN",["Snippet10 - from MSN"],"http://url2msn","true"],
+				["Title5 - from MSN",["Snippet5 - from MSN"],"http://url2msn", "true"]
+			]
+		]
+	],
+	[
+		["Web",10,
+			[
+				["Title1 - from MSN",["Snippet1 - from MSN"],"http://url1msn","true"],
+				["Title2 - from MSN",["Snippet2 - from MSN"],"http://url2msn","true"],
+				["Title3 - from MSN",["Snippet3 - from MSN"],"http://url3google","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"]
+			]
+		]
+	],
+	[
+		["Web",0,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url2msn","true"]
+			]
+		]
+	],
+	[],
+	[
+		["Web",-2,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url1msn","true"],
+				["Title3msn",[],"http://url3msn","true"]
+			]
+		]
+	],
+	[
+		["Web",-2,
+			[
+				["Title1msn",["Snippet1msn"],"http://url1msn","true"],
+				["Title2msn",["Snippet2msn"],"http://url1msn","true"],
+				["Title3msn",[],"http://url3msn","true"]
+			]
+		]
+	],
+	[],
+	[]
+])
+#set($msnRequestValues = [
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[
+		["Web",-3,4,"Off",
+			[
+				["Title",5]
+			],
+			[
+				["Web",6,2,"Url"],
+				["News",3,2,"Title"]
+			]
+		]
+	],
+	[
+		["Web",-3,4,"Off",
+			[
+				["Title",5]
+			],
+			[
+				["Web",6,2,"Url"],
+				["News",3,2,"Title"]
+			]
+		]
+	]
+])

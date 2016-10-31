@@ -1,0 +1,231 @@
+type - VARIABLE
+activityName - newItem
+----------
+type - VARIABLE
+activityName - elementSum
+----------
+type - VARIABLE
+activityName - currentResult
+----------
+type - VARIABLE
+activityName - counter
+----------
+type - VARIABLE
+activityName - newVarItem
+----------
+type - VARIABLE
+activityName - totalNumbers
+----------
+type - VARIABLE
+activityName - output
+----------
+type - VARIABLE
+activityName - counterPrime
+----------
+type - VARIABLE
+activityName - input
+----------
+type - RECEIVE
+activityName - ReceiveRequest
+partnerLink - client
+portType - {http://j2ee.netbeans.org/wsdl/squaresSum}squaresSumPortType
+operation - squaresSumOperation
+variable - input
+createInstance - yes
+messageExchange - null
+----------
+activityName - GetTotalNumbers
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - number($input.request/ns0:n)
+TO:
+xml-fragment - $totalNumbers
+activityName - InitializeEmptyResult
+type - ASSIGN
+COPY
+FROM:
+xmlns - http://docs.oasis-open.org/wsbpel/2.0/process/executable
+literal - 
+						
+ns0:squaresSumResponse - 
+							
+ns0:sum - 0
+ns0:squaresSumResponse_4 - 
+							
+ns0:variance - 0
+ns0:squaresSumResponse_6 - 
+							
+ns0:elements - 
+								
+ns0:element - 0
+ns0:elements_9 - 
+							
+ns0:squaresSumResponse_10 - 
+							
+ns0:varianceElements - 
+								
+ns0:element_12 - 0
+ns0:varianceElements_13 - 
+							
+ns0:squaresSumResponse_14 - 
+							
+ns0:prime - true
+ns0:squaresSumResponse_16 - 
+						
+literal_17 - 
+					
+TO:
+part - response
+variable - output
+COPY
+FROM:
+xml-fragment - $totalNumbers + 1
+TO:
+xml-fragment - $counter
+COPY
+FROM:
+xml-fragment - 0
+TO:
+xml-fragment - $elementSum
+COPY
+FROM:
+xml-fragment - 2
+TO:
+xml-fragment - $counterPrime
+type - FOREACH
+activityName - GenerateResults
+startCounterValue - 1
+finalCounterValue - $totalNumbers
+pararel - yes
+completionCondition - no
+----------
+activityName - ElementsSum
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $i + $elementSum
+TO:
+xml-fragment - $elementSum
+activityName - SquareElement
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $i * $i
+TO:
+xml-fragment - $currentResult
+activityName - IncreaseSum
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $output.response/ns0:sum + $currentResult
+TO:
+xml-fragment - $output.response/ns0:sum
+activityName - CalcResult
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $i * $i
+TO:
+xml-fragment - $currentResult
+activityName - savePartialResults
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $currentResult div ($totalNumbers + 1)
+TO:
+variable - newVarItem
+COPY
+FROM:
+xml-fragment - 
+										bpel:doXslTransform("project:/xslt/addVarianceElement.xsl", $output.response/ns0:varianceElements, "newVarItem", $newVarItem)
+									
+TO:
+xml-fragment - $output.response/ns0:varianceElements
+COPY
+FROM:
+xml-fragment - $currentResult
+TO:
+variable - newItem
+COPY
+FROM:
+xml-fragment - 
+										bpel:doXslTransform("project:/xslt/addElement.xsl", $output.response/ns0:elements, "newItem", $newItem)
+									
+TO:
+xml-fragment - $output.response/ns0:elements
+type - FOREACH
+activityName - CalculateVariance
+startCounterValue - 1
+finalCounterValue - $totalNumbers
+pararel - yes
+completionCondition - no
+----------
+activityName - PartialVariance
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $output.response/ns0:varianceElements/ns0:element[$counter] + $output.response/ns0:variance
+TO:
+xml-fragment - $output.response/ns0:variance
+activityName - IncreaseSumVariance
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - -1 + $counter
+TO:
+xml-fragment - $counter
+activityName - AverageSquare
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $elementSum div ($totalNumbers + 1)
+TO:
+xml-fragment - $elementSum
+COPY
+FROM:
+xml-fragment - -($elementSum * $elementSum)
+TO:
+xml-fragment - $elementSum
+activityName - TotalVariance
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $output.response/ns0:variance + $elementSum
+TO:
+xml-fragment - $output.response/ns0:variance
+type - IF
+activityName - IsPrimeIf
+condition - $totalNumbers = 0 or $totalNumbers = 1
+else - yes
+----------
+activityName - NoPrimeAssign
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - false()
+TO:
+xml-fragment - $output.response/ns0:prime
+type - WHILE
+activityName - PrimeWhile
+condition - ($counterPrime < $totalNumbers) and $output.response/ns0:prime
+----------
+type - IF
+activityName - IsPrimeIf2
+condition - $totalNumbers mod $counterPrime = 0
+else - no
+----------
+activityName - PrimeAssign
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - false()
+TO:
+xml-fragment - $output.response/ns0:prime
+activityName - IncreaseCounterPrime
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $counterPrime + 1
+TO:
+xml-fragment - $counterPrime

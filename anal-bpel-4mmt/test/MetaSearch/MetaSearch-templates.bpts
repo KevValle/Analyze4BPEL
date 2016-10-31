@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Original version: copyright (C) 2006 Philip Meyer
+Template-based version: copyright (C) 2008-2011 Antonio García Domínguez
+-->
+<tes:testSuite xmlns:msn="http://schemas.microsoft.com/MSNSearch/2005/09/fex" xmlns:met="http://examples.bpelunit.org/MetaSearch" xmlns:tes="http://www.bpelunit.org/schema/testSuite" xmlns:goog="http://examples.bpelunit.org/GoogleBridge">
+  <tes:name>MetaSearchTest</tes:name>
+  <tes:baseURL>http://localhost:7777/ws</tes:baseURL>
+  <tes:deployment>
+    <tes:put name="MetaSearch" type="activebpel">
+      <tes:wsdl>MetaSearch.wsdl</tes:wsdl>
+      <tes:property name="BPRFile">MetaSearch.bpr</tes:property>
+    </tes:put>
+    <tes:partner name="Google" wsdl="GoogleBridge.wsdl"/>
+    <tes:partner name="MSN" wsdl="msnsearch.wsdl"/>
+  </tes:deployment>
+
+  <tes:testCases>
+    <tes:testCase name="BaseTemplate">
+      <tes:setUp>
+	<tes:dataSource type="velocity" src="data.vm">
+	  <tes:property name="iteratedVars">googleAvailable msnAvailable msnResponse meta numeric conditions Client_Delay Google_Delay MSN_Delay 
+	  googleValues msnResponseValues msnRequestValues</tes:property>
+	</tes:dataSource>
+      </tes:setUp>
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send delay="$Client_Delay">
+	    <tes:template>
+	      <m:MetaSearchProcessRequest xmlns:m="http://examples.bpelunit.org/MetaSearch">
+			<m:query>$meta.get(0)</m:query>
+			<m:language>$meta.get(1)</m:language>
+			<m:country>$meta.get(2)</m:country>
+			<m:maxResults>$meta.get(3)</m:maxResults>
+	      </m:MetaSearchProcessRequest>
+	    </tes:template>
+	  </tes:send>
+	  	  
+	  
+	  <tes:receive fault="false">		
+	  			
+			<tes:condition>
+			 <tes:template><![CDATA[
+			   count(met:MetaSearchProcessResponse/met:result) = $numeric
+			   #foreach($V25 in $conditions)
+				 and met:MetaSearchProcessResponse/met:result[$V25.get(0)]/met:title/text() = "$V25.get(1)"
+			   #end
+			 ]]></tes:template>
+			 <tes:value>true()</tes:value>
+		   </tes:condition>
+		   
+	  </tes:receive>
+	  
+	</tes:sendReceive>
+      </tes:clientTrack>
+
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch" xmlns:goog="http://examples.bpelunit.org/GoogleBridge" assume="$googleAvailable = 'true'">
+	  <tes:receive fault="false" />
+	  <tes:send delay="$Google_Delay">
+	    <tes:template>
+	      <g:SearchEngineResultList xmlns:g="http://examples.bpelunit.org/GoogleBridge">
+		#foreach($V1 in $googleValues)
+		<result>
+		  <url>http://$V1.get(0)</url>
+		  <title>$V1.get(1)</title>
+		  <snippet>$V1.get(2)</snippet>
+		  #if($V1.get(3) == 'true')
+			<from>$V1.get(4)</from>
+		  #end
+		</result>
+		#end
+	      </g:SearchEngineResultList>
+	    </tes:template>
+	  </tes:send>
+	</tes:receiveSend>
+
+	</tes:partnerTrack>	
+
+      <tes:partnerTrack name="MSN" assume="$msnAvailable = 'true'">
+      
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex" assume="$msnResponse = 'true'">
+	  <tes:send delay="$MSN_Delay">
+	    <tes:template>
+	      <f:SearchResponse xmlns:f="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+		<f:Response>
+		  <f:Responses>
+		    #foreach($V1 in $msnResponseValues)
+		    <f:SourceResponse>
+		      <f:Source>$V1.get(0)</f:Source>
+		      <f:Offset>$V1.get(1)</f:Offset>
+		      <f:Total>$V1.get(2).size()</f:Total>
+		      <f:Results>
+			#foreach($V2 in $V1.get(2))
+			<f:Result>
+			  <f:Title>$V2.get(0)</f:Title>
+			  #if($V2.get(3) == 'true')
+				#foreach($V4 in $V2.get(1))<f:Description>$V4</f:Description>#end
+			  #end
+			  <f:Url>$V2.get(2)</f:Url>
+			</f:Result>
+			#end
+		      </f:Results>
+		    </f:SourceResponse>
+		    #end
+		  </f:Responses>
+		</f:Response>
+	      </f:SearchResponse>
+	      </tes:template>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex" assume="$msnResponse = 'false'">
+	  <tes:send delay="$MSN_Delay">
+	    <tes:template>
+	       <msn:Search>
+		<msn:Request>
+		  <msn:Requests>
+		  #foreach($V1 in $msnRequestValues)
+		    <msn:SearchRequest>
+		      <msn:AppID>$V1.get(0)</msn:AppID>
+		      <msn:Query>$V1.get(1)</msn:Query>
+		      <msn:CultureInfo>$V1.get(2)</msn:CultureInfo>
+		      <msn:SafeSearch>$V1.get(3)</msn:SafeSearch>
+		      
+		      <msn:Flags>
+				#foreach($V2 in $V1.get(4))
+				  <msn:SearchTag>
+					  <msn:Name>$V2.get(0)</msn:Name>
+					  <msn:Value>$V2.get(1)</msn:Value>
+				  </msn:SearchTag>
+				#end
+		      </msn:Flags>
+		      
+		      <msn:SourceRequest>
+				#foreach($V3 in $V1.get(5))
+					<msn:Request>
+					  <msn:Source>$V3.get(0)</msn:Source>
+					  <msn:Offset>$V3.get(1)</msn:Offset>
+					  <msn:Count>$V3.get(2)</msn:Count>
+					  <msn:ResultFields>$V3.get(3)</msn:ResultFields>
+					</msn:Request>
+				#end
+		      </msn:SourceRequest>
+		    </msn:SearchRequest>
+		    #end
+		  </msn:Requests>
+		</msn:Request>
+	      </msn:Search>
+	    </tes:template>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+
+      </tes:partnerTrack>
+    </tes:testCase>
+  </tes:testCases>
+</tes:testSuite>

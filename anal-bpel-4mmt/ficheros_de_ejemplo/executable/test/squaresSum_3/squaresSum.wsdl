@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+Copyright (C) 2012 Álvaro Cortijo García
+
+Permission is hereby granted, free of charge, to any person obtaining a 
+copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the 
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://xml.netbeans.org/schema/squaresSum" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://j2ee.netbeans.org/wsdl/squaresSum" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="squaresSum" targetNamespace="http://j2ee.netbeans.org/wsdl/squaresSum">
+  <types>
+    <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/squaresSum">
+      <xsd:import namespace="http://xml.netbeans.org/schema/squaresSum" schemaLocation="squaresSum.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="squaresSumOperationRequest">
+    <part element="ns:squaresSumRequest" name="request"/>
+  </message>
+  <message name="squaresSumOperationResponse">
+    <part element="ns:squaresSumResponse" name="response"/>
+  </message>
+  <portType name="squaresSumPortType">
+    <operation name="squaresSumOperation">
+      <input message="tns:squaresSumOperationRequest" name="input"/>
+      <output message="tns:squaresSumOperationResponse" name="output"/>
+    </operation>
+  </portType>
+  <binding name="squaresSumBinding" type="tns:squaresSumPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="squaresSumOperation">
+      <soap:operation/>
+      <input name="input">
+        <soap:body use="literal"/>
+      </input>
+      <output name="output">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="squaresSumService">
+    <port binding="tns:squaresSumBinding" name="squaresSumPort">
+      <soap:address location="http://localhost:8080/active-bpel/services/squaresSumService"/>
+    </port>
+  </service>
+  <plnk:partnerLinkType name="squaresSum">
+    <plnk:role name="squaresSumPortTypeRole" portType="tns:squaresSumPortType"/>
+  </plnk:partnerLinkType>
+</definitions>

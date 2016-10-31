@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://examples.bpelunit.org/MetaSearch" xmlns:ns1="http://schemas.microsoft.com/MSNSearch/2005/09/fex" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:client="http://examples.bpelunit.org/MetaSearch" targetNamespace="http://examples.bpelunit.org/MetaSearch" name="MetaSearch">
+  <import namespace="http://examples.bpelunit.org/GoogleBridge" location="GoogleBridge.wsdl"/>
+  <import namespace="http://schemas.microsoft.com/MSNSearch/2005/09/fex" location="msnsearch.wsdl"/>
+  <types>
+    <schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://examples.bpelunit.org/MetaSearch" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="MetaSearchProcessRequest" type="client:Input"/>
+      <element name="MetaSearchProcessResponse" type="client:ResultList"/>
+      <complexType name="Input">
+	<sequence>
+	  <element name="query" type="string"/>
+	  <element name="language" type="string"/>
+	  <element name="country" type="string"/>
+	  <element name="maxResults" type="int"/>
+	</sequence>
+      </complexType>
+      <element name="SearchEngineResultList" type="client:ResultList"/>
+      <complexType name="ResultList">
+	<sequence>
+	  <element name="noResult" type="int"/>
+	  <element name="noFromGoogle" type="int"/>
+	  <element name="noFromMSN" type="int"/>
+	  <element maxOccurs="unbounded" minOccurs="0" name="result" type="client:Result"/>
+	</sequence>
+      </complexType>
+      <element name="result" type="client:Result"/>
+      <complexType name="Result">
+	<sequence>
+	  <element name="url" type="string"/>
+	  <element name="title" type="string"/>
+	  <element name="snippet" type="string"/>
+	  <element name="from" type="string"/>
+	</sequence>
+      </complexType>
+      <element name="MetaSearchProcessFault" type="client:MetaSearchFault"/>
+      <complexType name="MetaSearchFault">
+	<sequence>
+	  <element name="message" type="string"/>
+	  <element name="root" type="string"/>
+	</sequence>
+      </complexType>
+    </schema>
+  </types>
+  <message name="MetaSearchRequestFault">
+    <part name="payload" element="tns:MetaSearchProcessFault"/>
+  </message>
+  <message name="MetaSearchRequestMessage">
+    <part name="payload" element="tns:MetaSearchProcessRequest"/>
+  </message>
+  <message name="MetaSearchResponseMessage">
+    <part name="payload" element="tns:MetaSearchProcessResponse"/>
+  </message>
+  <portType name="MetaSearch">
+    <operation name="process">
+      <input message="tns:MetaSearchRequestMessage"/>
+      <output message="tns:MetaSearchResponseMessage"/>
+      <fault name="MetaSearchFault" message="tns:MetaSearchRequestFault"/>
+    </operation>
+  </portType>
+  <binding name="MetaSearchBinding" type="tns:MetaSearch">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="process">
+      <soap:operation soapAction="process" style="document"/>
+      <input>
+	<soap:body use="literal"/>
+      </input>
+      <output>
+	<soap:body use="literal"/>
+      </output>
+      <fault name="MetaSearchFault">
+	<soap:fault name="MetaSearchFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="MetaSearch">
+    <port name="MetaSearchPort" binding="tns:MetaSearchBinding">
+      <soap:address location="http://localhost:8080/active-bpel/services/MetaSearch"/>
+    </port>
+  </service>
+  <plnk:partnerLinkType name="MetaSearch">
+    <plnk:role name="MetaSearchProvider">
+      <plnk:portType name="tns:MetaSearch"/>
+    </plnk:role>
+  </plnk:partnerLinkType>
+</definitions>

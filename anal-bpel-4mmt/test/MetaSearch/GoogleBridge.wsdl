@@ -1,0 +1,87 @@
+<definitions name="GoogleSearchBridge"
+             targetNamespace="http://examples.bpelunit.org/GoogleBridge"
+             xmlns:typens="http://examples.bpelunit.org/GoogleBridge"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+   <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" 
+         targetNamespace="http://examples.bpelunit.org/GoogleBridge">
+                
+       <element name="SearchEngineResultList" type="typens:ResultList" />
+       <complexType name="ResultList">
+ 	 <sequence>	
+	  <element name="result" type="typens:Result" minOccurs="0" maxOccurs="unbounded"/>
+	 </sequence>
+       </complexType>
+        
+       <xsd:element name="result" type="typens:Result" />
+       <complexType name="Result">
+					<sequence>
+						<element name="url" type="string" />
+            <element name="title" type="string" />
+            <element name="snippet" type="string" />
+					</sequence>
+				</complexType>
+
+      <xsd:element name="GoogleSearchRequestElement" type="typens:InputForSearch" />        
+      <xsd:complexType name="InputForSearch">
+        <sequence>
+						<element name="key" type="string" />
+            <element name="query" type="string" />
+            <element name="restrict" type="string" />
+            <element name="lr" type="string" />
+            <element name="start" type="int" />
+            <element name="max" type="int" />
+				</sequence>
+        
+      </xsd:complexType>
+     </xsd:schema>
+  </types> 
+
+  <message name="doGoogleSearch">
+    <part name="request" element="typens:GoogleSearchRequestElement"/>
+  </message>
+
+  <message name="doGoogleSearchResponse">
+    <part name="return" element="typens:SearchEngineResultList"/>           
+  </message>
+
+  <portType name="GoogleSearchPort">
+    <operation name="doGoogleSearch">
+      <input message="typens:doGoogleSearch"/>
+      <output message="typens:doGoogleSearchResponse"/>
+    </operation>
+  </portType>
+
+  <binding name="GoogleSearchBinding" type="typens:GoogleSearchPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="doGoogleSearch">
+      <soap:operation soapAction="GoogleSearchAction"/>
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+
+ <service name="GoogleSearchService">
+    <port name="GoogleSearchPort" binding="typens:GoogleSearchBinding">
+      <soap:address location="http://localhost:7777/ws/Google"/>
+    </port>
+  </service> 
+  
+  <plnk:partnerLinkType name="GoogleBridgePartnerLinkType">
+    <plnk:role name="GoogleBridgeProvider">
+      <plnk:portType name="typens:GoogleSearchPort"/>
+    </plnk:role>
+  </plnk:partnerLinkType>
+
+</definitions>

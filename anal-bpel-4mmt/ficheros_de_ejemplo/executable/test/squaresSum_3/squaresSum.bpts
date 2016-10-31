@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2012 Álvaro Cortijo García
+
+Permission is hereby granted, free of charge, to any person obtaining a 
+copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the 
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<tes:testSuite
+   xmlns:ap="http://j2ee.netbeans.org/wsdl/squaresSum"
+   xmlns:tns="http://xml.netbeans.org/schema/squaresSum"
+   xmlns:tes="http://www.bpelunit.org/schema/testSuite">
+
+  <tes:name>squaresSum</tes:name>
+  <tes:baseURL>http://localhost:7777/ws</tes:baseURL>
+
+  <tes:deployment>
+    <tes:put name="squaresSum" type="activebpel">
+      <tes:wsdl>squaresSum.wsdl</tes:wsdl>
+      <tes:property name="BPRFile">squaresSum.bpr</tes:property>
+    </tes:put>
+  </tes:deployment>
+
+  <tes:testCases>
+    <tes:testCase name="ZeroIterations" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="ap:squaresSumService"
+            port="squaresSumPort"
+            operation="squaresSumOperation">
+
+          <tes:send fault="false">
+            <tes:data>
+              <tns:squaresSumRequest>
+                <tns:n>0</tns:n>
+              </tns:squaresSumRequest>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:sum</tes:expression>
+              <tes:value>0</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:variance</tes:expression>
+              <tes:value>0</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>1</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>1</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>0</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>0</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:prime</tes:expression>
+              <tes:value>'false'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+    </tes:testCase>
+
+    <tes:testCase name="OneIteration" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="ap:squaresSumService"
+            port="squaresSumPort"
+            operation="squaresSumOperation">
+
+          <tes:send fault="false">
+            <tes:data>
+              <tns:squaresSumRequest>
+                <tns:n>1</tns:n>
+              </tns:squaresSumRequest>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:sum</tes:expression>
+              <tes:value>1</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:variance</tes:expression>
+              <tes:value>0.25</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>2</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>2</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>1</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>0.5</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:prime</tes:expression>
+              <tes:value>'false'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+    </tes:testCase>
+
+    <tes:testCase name="SeveralIterations" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="ap:squaresSumService"
+            port="squaresSumPort"
+            operation="squaresSumOperation">
+
+          <tes:send fault="false">
+            <tes:data>
+              <tns:squaresSumRequest>
+                <tns:n>100</tns:n>
+              </tns:squaresSumRequest>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:sum</tes:expression>
+              <tes:value>338350</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:variance</tes:expression>
+              <tes:value>850.0000000000009</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>101</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>101</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>338350</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>3350</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:prime</tes:expression>
+              <tes:value>'false'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+    </tes:testCase>
+
+    <tes:testCase name="FiveIterations" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="ap:squaresSumService"
+            port="squaresSumPort"
+            operation="squaresSumOperation">
+
+          <tes:send fault="false">
+            <tes:data>
+              <tns:squaresSumRequest>
+                <tns:n>5</tns:n>
+              </tns:squaresSumRequest>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:sum</tes:expression>
+              <tes:value>55</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:variance</tes:expression>
+              <tes:value>2.916666666666668</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>6</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>6</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>55</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>9.166666666666668</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:prime</tes:expression>
+              <tes:value>'true'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+    </tes:testCase>
+
+    <tes:testCase name="FourIterations" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="ap:squaresSumService"
+
+            port="squaresSumPort"
+            operation="squaresSumOperation">
+
+          <tes:send fault="false">
+            <tes:data>
+              <tns:squaresSumRequest>
+                <tns:n>4</tns:n>
+              </tns:squaresSumRequest>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:sum</tes:expression>
+              <tes:value>30</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:variance</tes:expression>
+              <tes:value>2</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>5</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>5</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>30</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>6</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:prime</tes:expression>
+              <tes:value>'false'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+    </tes:testCase>
+
+    <tes:testCase name="NineIterations" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+        <tes:sendReceive
+            service="ap:squaresSumService"
+            port="squaresSumPort"
+            operation="squaresSumOperation">
+
+          <tes:send fault="false">
+            <tes:data>
+              <tns:squaresSumRequest>
+                <tns:n>9</tns:n>
+              </tns:squaresSumRequest>
+            </tes:data>
+          </tes:send>
+
+          <tes:receive fault="false">
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:sum</tes:expression>
+              <tes:value>285</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:variance</tes:expression>
+              <tes:value>8.25</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>10</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>count(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>10</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:elements/tns:element)</tes:expression>
+              <tes:value>285</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>sum(tns:squaresSumResponse/tns:varianceElements/tns:element)</tes:expression>
+              <tes:value>28.5</tes:value>
+            </tes:condition>
+            <tes:condition>
+              <tes:expression>tns:squaresSumResponse/tns:prime</tes:expression>
+              <tes:value>'false'</tes:value>
+            </tes:condition>
+          </tes:receive>
+        </tes:sendReceive>
+      </tes:clientTrack>
+    </tes:testCase>
+
+  </tes:testCases>
+</tes:testSuite>

@@ -1,0 +1,3 @@
+bpel: loanApprovalProcess.bpel
+bpts: loanApprovalProcess.bpts
+dir: results

@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpel:process xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" 
+	xmlns:bpelx="http://schemas.oracle.com/bpel/extension" 
+	xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" 
+	xmlns:client="http://examples.bpelunit.org/MetaSearch" 
+	xmlns:ext="http://www.activebpel.org/2006/09/bpel/extension/query_handling" 
+	xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" 
+	xmlns:ns1="http://examples.bpelunit.org/GoogleBridge" 
+	xmlns:ns2="http://schemas.microsoft.com/MSNSearch/2005/09/fex" 
+	xmlns:ns4="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns:ora="http://schemas.oracle.com/xpath/extension" 
+	xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" 
+	xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" 
+		name="MetaSearch" queryLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116" 
+		suppressJoinFailure="yes" targetNamespace="http://examples.bpelunit.org/MetaSearch">
+
+  <bpel:import importType="http://schemas.xmlsoap.org/wsdl/" location="GoogleBridge.wsdl" namespace="http://examples.bpelunit.org/GoogleBridge"/>
+  <bpel:import importType="http://schemas.xmlsoap.org/wsdl/" location="MetaSearch.wsdl" namespace="http://examples.bpelunit.org/MetaSearch"/>
+  <bpel:import importType="http://schemas.xmlsoap.org/wsdl/" location="msnsearch.wsdl" namespace="http://schemas.microsoft.com/MSNSearch/2005/09/fex"/>
+  <bpel:import importType="http://schemas.xmlsoap.org/wsdl/" location="msnsearchRef.wsdl" namespace="http://schemas.microsoft.com/MSNSearch/2005/09/fex"/>
+  <bpel:partnerLinks>
+    <bpel:partnerLink myRole="MetaSearchProvider" name="client" partnerLinkType="client:MetaSearch"/>
+    <bpel:partnerLink name="Google" partnerLinkType="ns1:GoogleBridgePartnerLinkType" partnerRole="GoogleBridgeProvider"/>
+    <bpel:partnerLink name="MSN" partnerLinkType="ns2:MSNSearchPortType_PL" partnerRole="MSNSearchPortType_Role"/>
+  </bpel:partnerLinks>
+  <bpel:variables>
+    <bpel:variable messageType="client:MetaSearchRequestMessage" name="inputVariable"/>
+    <bpel:variable messageType="client:MetaSearchResponseMessage" name="outputVariable"/>
+    <bpel:variable messageType="ns2:SearchMessage" name="MSNSearch_Search_InputVariable"/>
+    <bpel:variable messageType="ns2:SearchResponseMessage" name="MSNSearch_Search_OutputVariable"/>
+    <bpel:variable messageType="ns1:doGoogleSearch" name="Google_doGoogleSearch_InputVariable"/>
+    <bpel:variable messageType="ns1:doGoogleSearchResponse" name="Google_doGoogleSearch_OutputVariable"/>
+    <bpel:variable name="done_google" type="xsd:boolean"/>
+    <bpel:variable name="done_msn" type="xsd:boolean"/>
+    <bpel:variable messageType="client:MetaSearchRequestFault" name="generalFault"/>
+  </bpel:variables>
+  <bpel:faultHandlers>
+    <bpel:catchAll>
+      <bpel:sequence name="Sequence_15">
+        <bpel:assign name="CreateFault">
+          <bpel:copy>
+                   <bpel:from><bpel:literal>
+                     <client:MetaSearchProcessFault xmlns:client="http://examples.bpelunit.org/MetaSearch" 
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					 <client:message>client:message</client:message>
+					 <client:root>client:root</client:root>
+					 </client:MetaSearchProcessFault>
+				   </bpel:literal></bpel:from>
+                 <bpel:to variable="generalFault" part="payload"></bpel:to>
+          </bpel:copy>
+          <bpel:copy>
+            <bpel:from>'Problem while executing MetaSearch'</bpel:from>
+            <bpel:to part="payload" variable="generalFault">
+              <bpel:query>client:message</bpel:query>
+            </bpel:to>
+          </bpel:copy>
+          <bpel:copy>
+            <bpel:from>'See instance for detail'</bpel:from>
+            <bpel:to part="payload" variable="generalFault">
+              <bpel:query>client:root</bpel:query>
+            </bpel:to>
+          </bpel:copy>
+        </bpel:assign>
+        <bpel:reply faultName="client:MetaSearchFault" name="ReplyFault" operation="process" partnerLink="client" portType="client:MetaSearch" variable="generalFault"/>
+      </bpel:sequence>
+    </bpel:catchAll>
+  </bpel:faultHandlers>
+  <bpel:sequence name="main">
+    <bpel:receive createInstance="yes" name="receiveInput" operation="process" partnerLink="client" portType="client:MetaSearch" variable="inputVariable"/>
+    <bpel:flow name="Flow_1">
+      <bpel:sequence name="Sequence_2">
+        <bpel:scope name="GoogleSearchScope">
+          <bpel:faultHandlers>
+            <bpel:catchAll>
+              <bpel:assign name="GoogleNotDone">
+                <bpel:copy>
+                  <bpel:from>false()</bpel:from>
+                  <bpel:to variable="done_google"/>
+                </bpel:copy>
+              </bpel:assign>
+            </bpel:catchAll>
+          </bpel:faultHandlers>
+          <bpel:sequence name="Sequence_3">
+            <bpel:assign name="InitializeGoogleValues">
+              <bpel:copy>
+                 <bpel:from><bpel:literal>
+									<typens:GoogleSearchRequestElement 
+									xmlns:typens="http://examples.bpelunit.org/GoogleBridge" 
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+									  <key>key</key>
+									  <query>query</query>
+									  <restrict>restrict</restrict>
+									  <lr>lr</lr>
+									  <start>0</start>
+									  <max>0</max>
+									</typens:GoogleSearchRequestElement>
+								  </bpel:literal></bpel:from>
+                <bpel:to variable="Google_doGoogleSearch_InputVariable" part="request"></bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>string('insert KEY here')</bpel:from>
+                <bpel:to part="request" variable="Google_doGoogleSearch_InputVariable">
+                  <bpel:query>key</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from part="payload" variable="inputVariable">
+                  <bpel:query>client:query</bpel:query>
+                </bpel:from>
+                <bpel:to part="request" variable="Google_doGoogleSearch_InputVariable">
+                  <bpel:query>query</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from part="payload" variable="inputVariable">
+                  <bpel:query>client:country</bpel:query>
+                </bpel:from>
+                <bpel:to part="request" variable="Google_doGoogleSearch_InputVariable">
+                  <bpel:query>restrict</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from part="payload" variable="inputVariable">
+                  <bpel:query>client:language</bpel:query>
+                </bpel:from>
+                <bpel:to part="request" variable="Google_doGoogleSearch_InputVariable">
+                  <bpel:query>lr</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>number(0)</bpel:from>
+                <bpel:to part="request" variable="Google_doGoogleSearch_InputVariable">
+                  <bpel:query>start</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>number(10)</bpel:from>
+                <bpel:to part="request" variable="Google_doGoogleSearch_InputVariable">
+                  <bpel:query>max</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+            </bpel:assign>
+            <bpel:invoke inputVariable="Google_doGoogleSearch_InputVariable" name="Google" operation="doGoogleSearch" outputVariable="Google_doGoogleSearch_OutputVariable" partnerLink="Google" portType="ns1:GoogleSearchPort"/>
+            <bpel:assign name="GoogleDone">
+              <bpel:copy>
+                <bpel:from>true()</bpel:from>
+                <bpel:to variable="done_google"/>
+              </bpel:copy>
+            </bpel:assign>
+          </bpel:sequence>
+        </bpel:scope>
+      </bpel:sequence>
+      <bpel:sequence name="Sequence_1">
+        <bpel:scope name="MSNSearchScope">
+          <bpel:faultHandlers>
+            <bpel:catchAll>
+              <bpel:assign name="MSNNotDone">
+                <bpel:copy>
+                  <bpel:from>false()</bpel:from>
+                  <bpel:to variable="done_msn"/>
+                </bpel:copy>
+              </bpel:assign>
+            </bpel:catchAll>
+          </bpel:faultHandlers>
+          <bpel:sequence name="Sequence_4">
+            <bpel:assign name="InitializeMSNValues">
+                <bpel:copy>
+                                <bpel:from><bpel:literal>
+                                <tns:Search xmlns:tns="http://schemas.microsoft.com/MSNSearch/2005/09/fex" 
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+									  <tns:Request>
+									    <tns:AppID>tns:AppID</tns:AppID>
+									    <tns:Query>tns:Query</tns:Query>
+									    <tns:CultureInfo>tns:CultureInfo</tns:CultureInfo>
+									    <tns:SafeSearch>Moderate</tns:SafeSearch>
+									    <tns:Flags>None</tns:Flags>
+									    <tns:Location>
+									      <tns:Latitude>0.0</tns:Latitude>
+									      <tns:Longitude>0.0</tns:Longitude>
+									      <tns:Radius>5.0</tns:Radius>
+									    </tns:Location>
+									    <tns:Requests>
+									      <tns:SourceRequest>
+									        <tns:Source>Web</tns:Source>
+									        <tns:Offset>0</tns:Offset>
+									        <tns:Count>10</tns:Count>
+									        <tns:ResultFields>Title Description Url</tns:ResultFields>
+									      </tns:SourceRequest>
+									    </tns:Requests>
+									  </tns:Request>
+									</tns:Search>
+								  </bpel:literal></bpel:from>
+                                <bpel:to variable="MSNSearch_Search_InputVariable" part="parameters"></bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>string('Insert key here')</bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:AppID</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from part="payload" variable="inputVariable">
+                  <bpel:query>client:query</bpel:query>
+                </bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:Query</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>'dummy'</bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:CultureInfo</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>'Off'</bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:SafeSearch</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>'None'</bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:Flags</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>'Web'</bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:Requests/ns2:SourceRequest/ns2:Source</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>number(0)</bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:Requests/ns2:SourceRequest/ns2:Offset</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>number(15)</bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:Requests/ns2:SourceRequest/ns2:Count</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>'All'</bpel:from>
+                <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                  <bpel:query>ns2:Request/ns2:Requests/ns2:SourceRequest/ns2:ResultFields</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+            </bpel:assign>
+            <bpel:if name="Switch_10">
+              <bpel:condition>(($inputVariable.payload/client:country != '') and ($inputVariable.payload/client:language != ''))</bpel:condition>
+              <bpel:assign name="ConcatLangAndCountry">
+                <bpel:copy>
+                  <bpel:from>concat(concat($inputVariable.payload/client:language, '-'), $inputVariable.payload/client:country)</bpel:from>
+                  <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                    <bpel:query>ns2:Request/ns2:CultureInfo</bpel:query>
+                  </bpel:to>
+                </bpel:copy>
+              </bpel:assign>
+              <bpel:else>
+                <bpel:assign name="UseDefaulten-US">
+                  <bpel:copy>
+                    <bpel:from>'en-US'</bpel:from>
+                    <bpel:to part="parameters" variable="MSNSearch_Search_InputVariable">
+                      <bpel:query>ns2:Request/ns2:CultureInfo</bpel:query>
+                    </bpel:to>
+                  </bpel:copy>
+                </bpel:assign>
+              </bpel:else>
+            </bpel:if>
+            <bpel:invoke inputVariable="MSNSearch_Search_InputVariable" name="MSNSearch" operation="Search" outputVariable="MSNSearch_Search_OutputVariable" partnerLink="MSN" portType="ns2:MSNSearchPortType"/>
+            <bpel:assign name="MSNDone">
+              <bpel:copy>
+                <bpel:from>true()</bpel:from>
+                <bpel:to variable="done_msn"/>
+              </bpel:copy>
+            </bpel:assign>
+          </bpel:sequence>
+        </bpel:scope>
+      </bpel:sequence>
+    </bpel:flow>
+    <bpel:if name="IsDoneAtAll">
+      <bpel:condition>((boolean($done_google) = true()) or (boolean($done_msn) = true()))</bpel:condition>
+      <bpel:sequence name="Sequence_9">
+        <bpel:scope name="IterationScope">
+          <bpel:variables>
+            <bpel:variable name="maxGoogle" type="xsd:int" />
+            <bpel:variable name="maxMSN" type="xsd:int"    />
+            <bpel:variable element="client:result" name="currentItem" />
+            <bpel:variable element="ns2:Result" name="tempMSNResult"/>
+            <bpel:variable element="ns1:result" name="tempGoogleResult"/>
+            <bpel:variable name="added" type="xsd:int"       />
+            <bpel:variable name="div2counter_final" type="xsd:int" />
+            <bpel:variable name="div2counter_maxResults" type="xsd:int" />
+          </bpel:variables>
+          <bpel:sequence name="Sequence_5">
+            <bpel:assign name="CounterToOne">
+			  <bpel:copy>
+                                <bpel:from><bpel:literal>
+                                <client:MetaSearchProcessResponse 
+                                xmlns:client="http://examples.bpelunit.org/MetaSearch" 
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+									  <client:noResult>0</client:noResult>
+									  <client:noFromGoogle>0</client:noFromGoogle>
+									  <client:noFromMSN>0</client:noFromMSN>
+									</client:MetaSearchProcessResponse>
+								  </bpel:literal></bpel:from>
+                                <bpel:to variable="outputVariable" part="payload"></bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>number(0)</bpel:from>
+                <bpel:to variable="added"/>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>number(0)</bpel:from>
+                <bpel:to part="payload" variable="outputVariable">
+                  <bpel:query>client:noResult</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>number(0)</bpel:from>
+                <bpel:to part="payload" variable="outputVariable">
+                  <bpel:query>client:noFromGoogle</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>number(0)</bpel:from>
+                <bpel:to part="payload" variable="outputVariable">
+                  <bpel:query>client:noFromMSN</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+              <bpel:copy>
+                <bpel:from>$inputVariable.payload/client:maxResults</bpel:from>
+                <bpel:to variable="div2counter_maxResults"/>
+              </bpel:copy>
+            </bpel:assign>
+            <bpel:flow name="Flow_2">
+              <bpel:sequence name="Sequence_11">
+                <bpel:if name="Switch_2">
+                  <bpel:condition>$done_msn</bpel:condition>
+                  <bpel:assign name="GetMaxMSDNNo">
+                    <bpel:copy>
+                      <bpel:from>count($MSNSearch_Search_OutputVariable.parameters/ns2:Response/ns2:Responses/ns2:SourceResponse/ns2:Results/ns2:Result)</bpel:from>
+                      <bpel:to variable="maxMSN"/>
+                    </bpel:copy>
+                    <bpel:copy>
+                      <bpel:from variable="maxMSN"/>
+                      <bpel:to part="payload" variable="outputVariable">
+                        <bpel:query>client:noFromMSN</bpel:query>
+                      </bpel:to>
+                    </bpel:copy>
+                  </bpel:assign>
+                  <bpel:else>
+                    <bpel:assign name="MaxNo0">
+                      <bpel:copy>
+                        <bpel:from>number(0)</bpel:from>
+                        <bpel:to variable="maxMSN"/>
+                      </bpel:copy>
+                    </bpel:assign>
+                  </bpel:else>
+                </bpel:if>
+              </bpel:sequence>
+              <bpel:sequence name="Sequence_10">
+                <bpel:if name="Switch_1">
+                  <bpel:condition>$done_google</bpel:condition>
+                  <bpel:assign name="GetMaxGoogleNo">
+                    <bpel:copy>
+                      <bpel:from>count($Google_doGoogleSearch_OutputVariable.return/result)</bpel:from>
+                      <bpel:to variable="maxGoogle"/>
+                    </bpel:copy>
+                    <bpel:copy>
+                      <bpel:from variable="maxGoogle"/>
+                      <bpel:to part="payload" variable="outputVariable">
+                        <bpel:query>client:noFromGoogle</bpel:query>
+                      </bpel:to>
+                    </bpel:copy>
+                  </bpel:assign>
+                  <bpel:else>
+                    <bpel:assign name="MaxNo0">
+                      <bpel:copy>
+                        <bpel:from>number(0)</bpel:from>
+                        <bpel:to variable="maxGoogle"/>
+                      </bpel:copy>
+                    </bpel:assign>
+                  </bpel:else>
+                </bpel:if>
+              </bpel:sequence>
+            </bpel:flow>
+
+            <!-- XPath 1.0 does not have the max() function added in
+                 XPath 2.0: we need to add our own <if> activities to
+                 calculate the proper final counter value and maximum
+                 number of successful branches -->
+            <bpel:if name="GoogleHasMoreResults">
+              <bpel:condition>$maxGoogle &gt; $maxMSN</bpel:condition>
+              <bpel:assign>
+                <bpel:copy>
+                  <bpel:from>-1 + 2*$maxGoogle</bpel:from>
+                  <bpel:to variable="div2counter_final"/>
+                </bpel:copy>
+              </bpel:assign>
+              <bpel:else>
+                <bpel:assign>
+                  <bpel:copy>
+                    <bpel:from>-1 + 2*$maxMSN</bpel:from>
+                    <bpel:to variable="div2counter_final"/>
+                  </bpel:copy>
+                </bpel:assign>
+              </bpel:else>
+            </bpel:if>
+            <bpel:if name="NotEnoughResultsToReachMax">
+              <bpel:condition>$maxGoogle + $maxMSN &lt; $div2counter_maxResults</bpel:condition>
+              <bpel:assign>
+                <bpel:copy>
+                  <bpel:from>$maxGoogle + $maxMSN</bpel:from>
+                  <bpel:to>$div2counter_maxResults</bpel:to>
+                </bpel:copy>
+              </bpel:assign>
+            </bpel:if>
+
+			
+          <bpel:if name="ClientResultsCondition">
+            <bpel:condition>$div2counter_maxResults &gt; 0</bpel:condition>
+            <bpel:forEach name="InterleaveResults" counterName="div2counter" parallel="no">
+              <bpel:startCounterValue>0</bpel:startCounterValue>
+              <bpel:finalCounterValue>$div2counter_final</bpel:finalCounterValue>
+              
+              <bpel:completionCondition>
+                <bpel:branches successfulBranchesOnly="yes">
+                  $div2counter_maxResults
+                </bpel:branches>
+              </bpel:completionCondition>
+              <bpel:scope>
+                <bpel:variables>
+                  <bpel:variable name="counter" type="xsd:int"/>
+                </bpel:variables>
+
+                <bpel:faultHandlers>
+                  <bpel:catchAll>
+                    <bpel:empty/>
+                  </bpel:catchAll>
+                </bpel:faultHandlers>
+
+                <bpel:sequence name="InterleaveResultsBody">
+                  <bpel:assign name="InitializeCounter">
+                    <bpel:copy>
+                      <bpel:from>1 + floor($div2counter div 2)</bpel:from>
+                      <bpel:to variable="counter"/>
+                    </bpel:copy>
+                  </bpel:assign>
+
+                  <bpel:if name="IfEvenIteration">
+                    <bpel:condition>(($div2counter mod 2) = 0)</bpel:condition>
+                    <bpel:if name="GoogleHasResult">
+                      <bpel:condition>($counter &lt;= $maxGoogle)</bpel:condition>
+                      <bpel:sequence name="LoadGoogleResult">
+                        <bpel:assign name="AssignTempGoogleElement">
+                          <bpel:copy>
+                                     <bpel:from><bpel:literal>
+                                      <typens:result xmlns:typens="http://examples.bpelunit.org/GoogleBridge" 
+                                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+										  <url>url</url>
+										  <title>title</title>
+										  <snippet>snippet</snippet>
+										</typens:result>
+										</bpel:literal></bpel:from>
+                                      <bpel:to variable="tempGoogleResult"></bpel:to>
+                          </bpel:copy>
+                          <bpel:copy>
+                            <bpel:from>$Google_doGoogleSearch_OutputVariable.return/result[$counter]</bpel:from>
+                            <bpel:to variable="tempGoogleResult"/>
+                          </bpel:copy>
+                        </bpel:assign>
+                        <bpel:assign name="CreateGoogleElement">
+                          <bpel:copy>
+                                      <bpel:from><bpel:literal>
+										<client:result xmlns:client="http://examples.bpelunit.org/MetaSearch" 
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+											  <client:url>client:url</client:url>
+											  <client:title>client:title</client:title>
+											  <client:snippet>client:snippet</client:snippet>
+											  <client:from>client:from</client:from>
+											</client:result>
+											</bpel:literal></bpel:from>
+                                        <bpel:to variable="currentItem"></bpel:to>
+                          </bpel:copy>
+                          <bpel:copy>
+                            <bpel:from variable="tempGoogleResult">
+                              <bpel:query>url</bpel:query>
+                            </bpel:from>
+                            <bpel:to variable="currentItem">
+                              <bpel:query>client:url</bpel:query>
+                            </bpel:to>
+                          </bpel:copy>
+                          <bpel:copy>
+                            <bpel:from variable="tempGoogleResult">
+                              <bpel:query>title</bpel:query>
+                            </bpel:from>
+                            <bpel:to variable="currentItem">
+                              <bpel:query>client:title</bpel:query>
+                            </bpel:to>
+                          </bpel:copy>
+                          <bpel:copy>
+                            <bpel:from variable="tempGoogleResult">
+                              <bpel:query>snippet</bpel:query>
+                            </bpel:from>
+                            <bpel:to variable="currentItem">
+                              <bpel:query>client:snippet</bpel:query>
+                            </bpel:to>
+                          </bpel:copy>
+                          <bpel:copy>
+                            <bpel:from>'Google'</bpel:from>
+                            <bpel:to variable="currentItem">
+                              <bpel:query>client:from</bpel:query>
+                            </bpel:to>
+                          </bpel:copy>
+                        </bpel:assign>
+                      </bpel:sequence>
+                      <bpel:else>
+                        <!-- Branch failed: do not count it against the result limit -->
+                        <bpel:throw faultName="client:MetaSearchFault"/>
+                      </bpel:else>
+                    </bpel:if>
+                    <bpel:else>
+                      <bpel:if name="MSNHasResult">
+                        <bpel:condition>($counter &lt;= $maxMSN)</bpel:condition>
+                        <bpel:sequence name="LoadMSNResult">
+                          <bpel:assign name="AssignTempMSNElement">
+                           <bpel:copy>
+                                          <bpel:from><bpel:literal>
+                                            <tns:Result xmlns:tns="http://schemas.microsoft.com/MSNSearch/2005/09/fex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+												  <tns:Title>tns:Title</tns:Title>
+												  <tns:Description>tns:Description</tns:Description>
+												  <tns:Url>tns:Url</tns:Url>
+												  <tns:DisplayUrl>tns:DisplayUrl</tns:DisplayUrl>
+												  <tns:CacheUrl>tns:CacheUrl</tns:CacheUrl>
+												  <tns:Source>tns:Source</tns:Source>
+												  <tns:SearchTags>tns:SearchTags</tns:SearchTags>
+												</tns:Result>
+												</bpel:literal></bpel:from>
+                                             <bpel:to variable="tempMSNResult"></bpel:to>
+                            </bpel:copy>
+                            <bpel:copy>
+                              <bpel:from>$MSNSearch_Search_OutputVariable.parameters/ns2:Response/ns2:Responses/ns2:SourceResponse/ns2:Results/ns2:Result[$counter]</bpel:from>
+                              <bpel:to variable="tempMSNResult"/>
+                            </bpel:copy>
+                          </bpel:assign>
+                          <bpel:assign name="CreateMSNElement">
+                            <bpel:copy>
+                                           <bpel:from><bpel:literal>
+                                           <client:result xmlns:client="http://examples.bpelunit.org/MetaSearch" 
+                                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+											  <client:url>client:url</client:url>
+											  <client:title>client:title</client:title>
+											  <client:snippet>client:snippet</client:snippet>
+											  <client:from>client:from</client:from>
+											</client:result>
+											</bpel:literal></bpel:from>
+                                             <bpel:to variable="currentItem"></bpel:to>
+                            </bpel:copy>
+                            <bpel:copy>
+                              <bpel:from variable="tempMSNResult">
+                                <bpel:query>ns2:Url</bpel:query>
+                              </bpel:from>
+                              <bpel:to variable="currentItem">
+                                <bpel:query>client:url</bpel:query>
+                              </bpel:to>
+                            </bpel:copy>
+                            <bpel:copy>
+                              <bpel:from variable="tempMSNResult">
+                                <bpel:query>ns2:Title</bpel:query>
+                              </bpel:from>
+                              <bpel:to variable="currentItem">
+                                <bpel:query>client:title</bpel:query>
+                              </bpel:to>
+                            </bpel:copy>
+                            <bpel:copy>
+                              <bpel:from>'dummy'</bpel:from>
+                              <bpel:to variable="currentItem">
+                                <bpel:query>client:snippet</bpel:query>
+                              </bpel:to>
+                            </bpel:copy>
+                            <bpel:copy>
+                              <bpel:from>'MSN'</bpel:from>
+                              <bpel:to variable="currentItem">
+                                <bpel:query>client:from</bpel:query>
+                              </bpel:to>
+                            </bpel:copy>
+                          </bpel:assign>
+                          <bpel:if name="MSNResultHasDescription">
+                            <bpel:condition>(count($tempMSNResult/ns2:Description) &gt; 0)</bpel:condition>
+                            <bpel:assign name="AddDescription">
+                              <bpel:copy>
+                                <bpel:from variable="tempMSNResult">
+                                  <bpel:query>ns2:Description</bpel:query>
+                                </bpel:from>
+                                <bpel:to variable="currentItem">
+                                  <bpel:query>client:snippet</bpel:query>
+                                </bpel:to>
+                              </bpel:copy>
+                            </bpel:assign>
+                            <bpel:else>
+                              <bpel:empty/>
+                            </bpel:else>
+                          </bpel:if>
+                        </bpel:sequence>
+                        <bpel:else>
+                          <!-- Branch failed: do not count it against the result limit -->
+                          <bpel:throw faultName="client:MetaSearchFault"/>
+                        </bpel:else>
+                      </bpel:if>
+                    </bpel:else>
+                  </bpel:if>
+                  <bpel:scope name="CheckDuplicates">
+                    <bpel:variables>
+                      <bpel:variable name="doAdd" type="xsd:boolean"/>
+                    </bpel:variables>
+                    <bpel:sequence name="CheckForDuplicates">
+                      <bpel:assign name="InitializeDoAdd">
+                        <bpel:copy>
+                          <bpel:from>true()</bpel:from>
+                          <bpel:to variable="doAdd"/>
+                        </bpel:copy>
+                      </bpel:assign>
+
+                      <!-- This loop should work with parallel="yes" -->
+                      <bpel:forEach name="ScanResultsForMatch" counterName="currentResultNumber" parallel="no">
+                        <bpel:startCounterValue>1</bpel:startCounterValue>
+                        <bpel:finalCounterValue>count($outputVariable.payload/client:result)</bpel:finalCounterValue>
+                        <bpel:scope>
+                          <bpel:if name="Switch_6">
+                            <bpel:condition>
+                              $outputVariable.payload/client:result[$currentResultNumber]/client:url = $currentItem/client:url
+                            </bpel:condition>
+                            <bpel:assign name="doNotAdd">
+                              <bpel:copy>
+                                <bpel:from>false()</bpel:from>
+                                <bpel:to variable="doAdd"/>
+                              </bpel:copy>
+                            </bpel:assign>
+                          </bpel:if>
+                        </bpel:scope>
+                      </bpel:forEach>
+
+                      <bpel:if name="Switch_7">
+                        <bpel:condition>($doAdd = true())</bpel:condition>
+                        <bpel:sequence name="Sequence_16">
+                          <bpel:assign name="AddAnyElement">
+                             <bpel:copy>
+                                <bpel:from>
+									<![CDATA[bpel:doXslTransform("project:/xslt/results.xsl", $outputVariable.payload, "currentItem", $currentItem)]]>
+								</bpel:from>
+                               <bpel:to>$outputVariable.payload</bpel:to>
+                             </bpel:copy>
+                          </bpel:assign>
+                          <bpel:assign name="AddedPlusOne">
+                            <bpel:copy>
+                              <bpel:from>($added + 1)</bpel:from>
+                              <bpel:to variable="added"/>
+                            </bpel:copy>
+                          </bpel:assign>
+                        </bpel:sequence>
+                        <bpel:else>
+                          <bpel:empty/>
+                        </bpel:else>
+                      </bpel:if>
+                    </bpel:sequence>
+                  </bpel:scope>
+                </bpel:sequence>
+              </bpel:scope>
+            </bpel:forEach>
+          </bpel:if>
+
+            <bpel:assign name="CopyResultNumber">
+              <bpel:copy>
+                <bpel:from variable="added"/>
+                <bpel:to part="payload" variable="outputVariable">
+                  <bpel:query>client:noResult</bpel:query>
+                </bpel:to>
+              </bpel:copy>
+            </bpel:assign>
+          </bpel:sequence>
+        </bpel:scope>
+      </bpel:sequence>
+      <bpel:else>
+        <bpel:assign name="AssignZeroToOutput">
+           <bpel:copy>
+                        <bpel:from><bpel:literal>
+                        <client:MetaSearchProcessResponse xmlns:client="http://examples.bpelunit.org/MetaSearch" 
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+							  <client:noResult>0</client:noResult>
+							  <client:noFromGoogle>0</client:noFromGoogle>
+							  <client:noFromMSN>0</client:noFromMSN>
+							</client:MetaSearchProcessResponse>
+						  </bpel:literal></bpel:from>
+                        <bpel:to variable="outputVariable" part="payload"></bpel:to>
+          </bpel:copy>
+          <bpel:copy>
+            <bpel:from>number(0)</bpel:from>
+            <bpel:to part="payload" variable="outputVariable">
+              <bpel:query>client:noResult</bpel:query>
+            </bpel:to>
+          </bpel:copy>
+          <bpel:copy>
+            <bpel:from>number(0)</bpel:from>
+            <bpel:to part="payload" variable="outputVariable">
+              <bpel:query>client:noFromGoogle</bpel:query>
+            </bpel:to>
+          </bpel:copy>
+          <bpel:copy>
+            <bpel:from>number(0)</bpel:from>
+            <bpel:to part="payload" variable="outputVariable">
+              <bpel:query>client:noFromMSN</bpel:query>
+            </bpel:to>
+          </bpel:copy>
+        </bpel:assign>
+      </bpel:else>
+    </bpel:if>
+    <bpel:reply name="replyOutput" operation="process" partnerLink="client"
+                portType="client:MetaSearch" variable="outputVariable"/>
+  </bpel:sequence>
+</bpel:process>

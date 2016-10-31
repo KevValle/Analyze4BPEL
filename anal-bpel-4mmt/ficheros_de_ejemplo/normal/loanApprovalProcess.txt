@@ -1,0 +1,60 @@
+type - VARIABLE
+activityName - approval
+----------
+type - VARIABLE
+activityName - request
+----------
+type - VARIABLE
+activityName - risk
+----------
+type - RECEIVE
+activityName - ReceiveRequest
+partnerLink - customer
+portType - {http://j2ee.netbeans.org/wsdl/loanServicePT}loanServicePT
+operation - request
+variable - request
+createInstance - yes
+messageExchange - null
+----------
+type - IF
+activityName - IfSmallAmount
+condition - ( $request.amount <= 10000 )
+else - yes
+----------
+activityName - AssessRiskOfSmallAmount
+type - INVOKE
+inputVariable - request
+outputVariable - risk
+operation - check
+partnerLink - assessor
+portType - {http://j2ee.netbeans.org/wsdl/loanServicePT}riskAssessmentPT
+----------
+type - IF
+activityName - IfLowRisk
+condition - ( $risk.level = 'low' )
+else - yes
+----------
+activityName - ApproveLowRiskSmallAmountLoans
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - true()
+TO:
+part - accept
+variable - approval
+activityName - CheckApproverForHighRiskLowAmount
+type - INVOKE
+inputVariable - request
+outputVariable - approval
+operation - approve
+partnerLink - approver
+portType - {http://j2ee.netbeans.org/wsdl/loanServicePT}loanApprovalPT
+----------
+activityName - ApproveLargeAmount
+type - INVOKE
+inputVariable - request
+outputVariable - approval
+operation - approve
+partnerLink - approver
+portType - {http://j2ee.netbeans.org/wsdl/loanServicePT}loanApprovalPT
+----------

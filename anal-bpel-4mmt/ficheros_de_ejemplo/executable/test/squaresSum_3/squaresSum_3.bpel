@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2012 Álvaro Cortijo García
+
+Permission is hereby granted, free of charge, to any person obtaining a 
+copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the 
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<process xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor" xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" xmlns:tns="http://enterprise.netbeans.org/bpel/SquaresSum/squaresSum" xmlns:ns0="http://xml.netbeans.org/schema/squaresSum" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="squaresSum" targetNamespace="http://enterprise.netbeans.org/bpel/SquaresSum/squaresSum">
+
+	<import importType="http://schemas.xmlsoap.org/wsdl/" location="squaresSum.wsdl" namespace="http://j2ee.netbeans.org/wsdl/squaresSum"/>
+	<partnerLinks>
+		<partnerLink xmlns:tns="http://j2ee.netbeans.org/wsdl/squaresSum" myRole="squaresSumPortTypeRole" name="client" partnerLinkType="tns:squaresSum"/>
+	</partnerLinks>
+	<variables>
+		<variable xmlns:tns="http://j2ee.netbeans.org/wsdl/squaresSum" messageType="tns:squaresSumOperationResponse" name="output"/>
+		<variable xmlns:tns="http://j2ee.netbeans.org/wsdl/squaresSum" messageType="tns:squaresSumOperationRequest" name="input"/>
+		<variable name="counter" type="xsd:unsignedInt"/>
+		<variable name="elementSum" type="xsd:double"/>
+		<variable name="currentResult" type="xsd:unsignedInt"/>
+		<variable name="totalNumbers" type="xsd:unsignedInt"/>
+		<variable name="counterPrime" type="xsd:unsignedInt"/>
+		<variable name="newItem" element="ns0:element">
+			<from>
+				<literal xml:space="preserve">
+					<tns:element xmlns:tns="http://xml.netbeans.org/schema/squaresSum" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0</tns:element>
+				</literal>
+			</from>
+		</variable>
+		<variable name="newVarItem" element="ns0:element">
+			<from>
+				<literal xml:space="preserve">
+					<tns:element xmlns:tns="http://xml.netbeans.org/schema/squaresSum" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0</tns:element>
+				</literal>
+			</from>
+		</variable>
+	</variables>
+	<sequence>
+		<receive xmlns:tns="http://j2ee.netbeans.org/wsdl/squaresSum" createInstance="yes" name="ReceiveRequest" operation="squaresSumOperation" partnerLink="client" portType="tns:squaresSumPortType" variable="input"/>
+		<assign name="GetTotalNumbers">
+			<copy>
+				<from>number($input.request/ns0:n)</from>
+				<to>$totalNumbers</to>
+			</copy>
+		</assign>
+		<assign name="InitializeEmptyResult">
+			<copy>
+				<from>
+					<literal>
+						<ns0:squaresSumResponse>
+							<ns0:sum>0</ns0:sum>
+							<ns0:variance>0</ns0:variance>
+							<ns0:elements>
+								<ns0:element>0</ns0:element>
+							</ns0:elements>
+							<ns0:varianceElements>
+								<ns0:element>0</ns0:element>
+							</ns0:varianceElements>
+							<ns0:prime>true</ns0:prime>
+						</ns0:squaresSumResponse>
+					</literal>
+				</from>
+				<to part="response" variable="output"/>
+			</copy>
+			<copy>
+				<from>$totalNumbers + 1</from>
+				<to>$counter</to>
+			</copy>
+			<copy>
+				<from>0</from>
+				<to>$elementSum</to>
+			</copy>
+			<copy>
+				<from>2</from>
+				<to>$counterPrime</to>
+			</copy>
+		</assign>
+		<forEach counterName="i" name="GenerateResults" parallel="yes">
+			<startCounterValue>1</startCounterValue>
+			<finalCounterValue>$totalNumbers</finalCounterValue>
+			<scope name="ResultLoopBody">
+				<sequence>
+					<scope isolated="yes" name="SaveSquare">
+						<sequence>
+							<assign name="ElementsSum">
+								<copy>
+									<from>$i + $elementSum</from>
+									<to>$elementSum</to>
+								</copy>							
+							</assign>
+							<assign name="SquareElement">
+								<copy>
+									<from>$i * $i</from>
+									<to>$currentResult</to>
+								</copy>
+							</assign>
+							<assign name="IncreaseSum">
+								<copy>
+									<from>$output.response/ns0:sum + $currentResult</from>
+									<to>$output.response/ns0:sum</to>
+								</copy>
+							</assign>
+						</sequence>
+					</scope>
+					<scope isolated="yes" name="CalculateParcialResult">
+						<sequence>
+							<assign name="CalcResult">
+								<copy>
+									<from>$i * $i</from>
+									<to>$currentResult</to>
+								</copy>
+							</assign>
+							<assign name="savePartialResults">
+								<copy>
+									<from>$currentResult div ($totalNumbers + 1)</from>
+									<to variable="newVarItem"></to>
+								</copy>
+								<copy>
+									<from>
+										<![CDATA[bpel:doXslTransform("project:/xslt/addVarianceElement.xsl", $output.response/ns0:varianceElements, "newVarItem", $newVarItem)]]>
+									</from>
+									<to>$output.response/ns0:varianceElements</to>
+								</copy>
+								<copy>
+									<from>$currentResult</from>
+									<to variable="newItem"></to>
+								</copy>
+								<copy>
+									<from>
+										<![CDATA[bpel:doXslTransform("project:/xslt/addElement.xsl", $output.response/ns0:elements, "newItem", $newItem)]]>
+									</from>
+									<to>$output.response/ns0:elements</to>
+								</copy>
+							</assign>
+						</sequence>
+					</scope>
+				</sequence>
+			</scope>
+		</forEach>
+
+		<forEach counterName="i" name="CalculateVariance" parallel="yes">
+			<startCounterValue>1</startCounterValue>
+			<finalCounterValue>$totalNumbers</finalCounterValue>
+			<scope isolated="yes" name="ResultLoopBody">
+				<sequence>
+					<assign name="PartialVariance">
+						<copy>
+							<from>$output.response/ns0:varianceElements/ns0:element[$counter] + $output.response/ns0:variance</from>
+							<to>$output.response/ns0:variance</to>
+						</copy>
+					</assign>
+					<assign name="IncreaseSumVariance">
+						<copy>
+							<from>-1 + $counter</from>
+							<to>$counter</to>
+						</copy>
+					</assign>
+				</sequence>
+			</scope>
+		</forEach>
+		<scope name="ResultVariance">
+			<sequence>
+				<assign name="AverageSquare">
+					<copy>
+						<from>$elementSum div ($totalNumbers + 1)</from>
+						<to>$elementSum</to>
+					</copy>
+					<copy>
+						<from>-($elementSum * $elementSum)</from>
+						<to>$elementSum</to>
+					</copy>
+				</assign>
+				<assign name="TotalVariance">
+					<copy>
+						<from>$output.response/ns0:variance + $elementSum</from>
+						<to>$output.response/ns0:variance</to>
+					</copy>
+				</assign>
+			</sequence>
+		</scope>
+
+		<if name="IsPrimeIf">
+			<condition>$totalNumbers = 0 or $totalNumbers = 1</condition>
+				<assign validate="no" name="NoPrimeAssign">
+					<copy>
+						<from>false()</from>
+						<to>$output.response/ns0:prime</to>
+					</copy>
+				</assign>
+			<else>
+				<while name="PrimeWhile">
+					<condition>($counterPrime &lt; $totalNumbers) and $output.response/ns0:prime</condition>
+					<scope name="PrimeScope">
+						<sequence name="PrimeSequence">
+							<if name="IsPrimeIf2">
+								<condition>$totalNumbers mod $counterPrime = 0</condition>
+								<assign validate="no" name="PrimeAssign">
+									<copy>
+										<from>false()</from>
+										<to>$output.response/ns0:prime</to>
+									</copy>
+								</assign>
+							</if>
+							<assign validate="no" name="IncreaseCounterPrime">
+								<copy>
+									<from>$counterPrime + 1</from>
+									<to>$counterPrime</to>
+								</copy>
+							</assign>
+						</sequence>
+					</scope>
+				</while>
+			</else>
+		</if>
+
+		<reply xmlns:tns="http://j2ee.netbeans.org/wsdl/squaresSum" name="SendResultVariance" operation="squaresSumOperation" partnerLink="client" portType="tns:squaresSumPortType" variable="output"/>
+	</sequence>
+</process>
+

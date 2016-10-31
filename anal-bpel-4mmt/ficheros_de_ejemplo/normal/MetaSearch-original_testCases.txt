@@ -1,0 +1,1179 @@
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 3
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 3
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_18 - 
+		
+url_19 - http://url2google
+title_20 - Title2google
+snippet_21 - Snippet2google
+result_22 - 
+		
+goog:SearchEngineResultList_23 - 
+		
+url_24 - http://url3google
+title_25 - Title3google
+snippet_26 - Snippet3google
+result_27 - 
+		
+tes:receiveSend - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 3
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 3
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 3
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Description - Snippet1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_22 - 
+			
+msn:Title_23 - Title2msn
+msn:Description_24 - Snippet2msn
+msn:Url_25 - http://url2msn
+msn:Result_26 - 
+			
+msn:Results_27 - 
+			
+msn:Title_28 - Title3msn
+msn:Description_29 - Snippet3msn
+msn:Url_30 - http://url3msn
+msn:Result_31 - 
+			
+msn:Response - 
+		
+tes:receiveSend - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 6
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 6
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[1]/met:title/text()
+tes:value_12 - "Title1google"
+tes:expression_13 - met:MetaSearchProcessResponse/met:result[2]/met:title/text()
+tes:value_14 - "Title1msn"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_22 - 
+		
+url_23 - http://url2google
+title_24 - Title2google
+snippet_25 - Snippet2google
+result_26 - 
+		
+goog:SearchEngineResultList_27 - 
+		
+url_28 - http://url3google
+title_29 - Title3google
+snippet_30 - Snippet3google
+result_31 - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_33 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 3
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Description - Snippet1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_43 - 
+			
+msn:Title_44 - Title2msn
+msn:Description_45 - Snippet2msn
+msn:Url_46 - http://url2msn
+msn:Result_47 - 
+			
+msn:Results_48 - 
+			
+msn:Title_49 - Title3msn
+msn:Description_50 - Snippet3msn
+msn:Url_51 - http://url3msn
+msn:Result_52 - 
+			
+msn:Response - 
+		
+tes:receiveSend_54 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 4
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 4
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[1]/met:title/text()
+tes:value_12 - "Title1google"
+tes:expression_13 - met:MetaSearchProcessResponse/met:result[2]/met:title/text()
+tes:value_14 - "Title1msn"
+tes:expression_15 - met:MetaSearchProcessResponse/met:result[3]/met:title/text()
+tes:value_16 - "Title2msn"
+tes:expression_17 - met:MetaSearchProcessResponse/met:result[4]/met:title/text()
+tes:value_18 - "Title3msn"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_27 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 3
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Description - Snippet1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_37 - 
+			
+msn:Title_38 - Title2msn
+msn:Description_39 - Snippet2msn
+msn:Url_40 - http://url2msn
+msn:Result_41 - 
+			
+msn:Results_42 - 
+			
+msn:Title_43 - Title3msn
+msn:Description_44 - Snippet3msn
+msn:Url_45 - http://url3msn
+msn:Result_46 - 
+			
+msn:Response - 
+		
+tes:receiveSend_48 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 3
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 3
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[1]/met:title/text()
+tes:value_12 - "Title1google"
+tes:expression_13 - met:MetaSearchProcessResponse/met:result[2]/met:title/text()
+tes:value_14 - "Title1msn"
+tes:expression_15 - met:MetaSearchProcessResponse/met:result[3]/met:title/text()
+tes:value_16 - "Title2google"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_24 - 
+		
+url_25 - http://url2google
+title_26 - Title2google
+snippet_27 - Snippet2google
+result_28 - 
+		
+goog:SearchEngineResultList_29 - 
+		
+url_30 - http://url3google
+title_31 - Title3google
+snippet_32 - Snippet3google
+result_33 - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_35 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 3
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Description - Snippet1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_45 - 
+			
+msn:Title_46 - Title2msn
+msn:Description_47 - Snippet2msn
+msn:Url_48 - http://url2msn
+msn:Result_49 - 
+			
+msn:Results_50 - 
+			
+msn:Title_51 - Title3msn
+msn:Description_52 - Snippet3msn
+msn:Url_53 - http://url3msn
+msn:Result_54 - 
+			
+msn:Response - 
+		
+tes:receiveSend_56 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 4
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 1
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[1]/met:title/text()
+tes:value_12 - "Title1google"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_21 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 1
+msn:Results - 
+			
+msn:Title - Title1 - from MSN
+msn:Description - Snippet1 - from MSN
+msn:Url - http://url1google
+msn:Result - 
+			
+msn:Response - 
+		
+tes:receiveSend_32 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 3
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 3
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 3
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_21 - 
+			
+msn:Title_22 - Title2msn
+msn:Url_23 - http://url2msn
+msn:Result_24 - 
+			
+msn:Results_25 - 
+			
+msn:Title_26 - Title3msn
+msn:Url_27 - http://url3msn
+msn:Result_28 - 
+			
+msn:Response - 
+		
+tes:receiveSend - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:MetaSearchProcessRequest_4 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_6 - 
+		
+met:maxResults - 2
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 2
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 2
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Description - Snippet1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_21 - 
+			
+msn:Title_22 - Title2msn
+msn:Description_23 - Snippet2msn
+msn:Url_24 - http://url2msn
+msn:Result_25 - 
+			
+msn:Response - 
+		
+tes:receiveSend - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - -1
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 0
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_18 - 
+		
+url_19 - http://url2google
+title_20 - Title2google
+snippet_21 - Snippet2google
+result_22 - 
+		
+goog:SearchEngineResultList_23 - 
+		
+url_24 - http://url3google
+title_25 - Title3google
+snippet_26 - Snippet3google
+result_27 - 
+		
+tes:receiveSend - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 6
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 3
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[1]/met:title/text()
+tes:value_12 - "Title1google"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_20 - 
+		
+url_21 - http://url2google
+title_22 - Title2google
+snippet_23 - Snippet2google
+result_24 - 
+		
+goog:SearchEngineResultList_25 - 
+		
+url_26 - http://url3google
+title_27 - Title3google
+snippet_28 - Snippet3google
+result_29 - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_31 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 3
+msn:Results - 
+			
+msn:Title - Title1 - from MSN
+msn:Description - Snippet1 - from MSN
+msn:Url - http://url1google
+msn:Result - 
+			
+msn:Results_41 - 
+			
+msn:Title_42 - Title2 - from MSN
+msn:Description_43 - Snippet2 - from MSN
+msn:Url_44 - http://url2google
+msn:Result_45 - 
+			
+msn:Results_46 - 
+			
+msn:Title_47 - Title3 - from MSN
+msn:Description_48 - Snippet3 - from MSN
+msn:Url_49 - http://url3google
+msn:Result_50 - 
+			
+msn:Response - 
+		
+tes:receiveSend_52 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 6
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 3
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[1]/met:title/text()
+tes:value_12 - "Title1google"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_20 - 
+		
+url_21 - http://url1google
+title_22 - Title2google
+snippet_23 - Snippet2google
+result_24 - 
+		
+goog:SearchEngineResultList_25 - 
+		
+url_26 - http://url3google
+title_27 - Title3google
+snippet_28 - Snippet3google
+result_29 - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_31 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 3
+msn:Results - 
+			
+msn:Title - Title1 - from MSN
+msn:Description - Snippet1 - from MSN
+msn:Url - http://url1google
+msn:Result - 
+			
+msn:Results_41 - 
+			
+msn:Title_42 - Title2 - from MSN
+msn:Description_43 - Snippet2 - from MSN
+msn:Url_44 - http://url2google
+msn:Result_45 - 
+			
+msn:Results_46 - 
+			
+msn:Title_47 - Title3 - from MSN
+msn:Description_48 - Snippet3 - from MSN
+msn:Url_49 - http://url3google
+msn:Result_50 - 
+			
+msn:Response - 
+		
+tes:receiveSend_52 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 10
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 10
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[1]/met:title/text()
+tes:value_12 - "Title1google"
+tes:expression_13 - met:MetaSearchProcessResponse/met:result[2]/met:title/text()
+tes:value_14 - "Title1msn"
+tes:expression_15 - met:MetaSearchProcessResponse/met:result[3]/met:title/text()
+tes:value_16 - "Title2google"
+tes:expression_17 - met:MetaSearchProcessResponse/met:result[4]/met:title/text()
+tes:value_18 - "Title2msn"
+tes:expression_19 - met:MetaSearchProcessResponse/met:result[5]/met:title/text()
+tes:value_20 - "Title3google"
+tes:expression_21 - met:MetaSearchProcessResponse/met:result[6]/met:title/text()
+tes:value_22 - "Title3msn"
+tes:expression_23 - met:MetaSearchProcessResponse/met:result[7]/met:title/text()
+tes:value_24 - "Title4google"
+tes:expression_25 - met:MetaSearchProcessResponse/met:result[8]/met:title/text()
+tes:value_26 - "Title4msn"
+tes:expression_27 - met:MetaSearchProcessResponse/met:result[9]/met:title/text()
+tes:value_28 - "Title5google"
+tes:expression_29 - met:MetaSearchProcessResponse/met:result[10]/met:title/text()
+tes:value_30 - "Title6google"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_38 - 
+		
+url_39 - http://url2google
+title_40 - Title2google
+snippet_41 - Snippet2google
+result_42 - 
+		
+goog:SearchEngineResultList_43 - 
+		
+url_44 - http://url3google
+title_45 - Title3google
+snippet_46 - Snippet3google
+result_47 - 
+		
+goog:SearchEngineResultList_48 - 
+		
+url_49 - http://url4google
+title_50 - Title4google
+snippet_51 - Snippet4google
+result_52 - 
+		
+goog:SearchEngineResultList_53 - 
+		
+url_54 - http://url5google
+title_55 - Title5google
+snippet_56 - Snippet5google
+result_57 - 
+		
+goog:SearchEngineResultList_58 - 
+		
+url_59 - http://url6google
+title_60 - Title6google
+snippet_61 - Snippet6google
+result_62 - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_64 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - -3
+msn:Total - 4
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Description - Snippet1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_74 - 
+			
+msn:Title_75 - Title2msn
+msn:Description_76 - Snippet2msn
+msn:Url_77 - http://url2msn
+msn:Result_78 - 
+			
+msn:Results_79 - 
+			
+msn:Title_80 - Title3msn
+msn:Description_81 - Snippet3msn
+msn:Url_82 - http://url3msn
+msn:Result_83 - 
+			
+msn:Results_84 - 
+			
+msn:Title_85 - Title4msn
+msn:Description_86 - Snippet4msn
+msn:Url_87 - http://url4msn
+msn:Result_88 - 
+			
+msn:Response - 
+		
+tes:receiveSend_90 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 12
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 11
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - url1msn
+result - 
+		
+goog:SearchEngineResultList_18 - 
+		
+url_19 - http://url2google
+title_20 - Title2google
+snippet_21 - Snippet2google
+result_22 - 
+		
+goog:SearchEngineResultList_23 - 
+		
+url_24 - http://url2google
+title_25 - Title3google
+snippet_26 - Snippet3google
+result_27 - 
+		
+goog:SearchEngineResultList_28 - 
+		
+url_29 - http://url4google
+title_30 - Title4google
+snippet_31 - Snippet4google
+result_32 - 
+		
+goog:SearchEngineResultList_33 - 
+		
+url_34 - http://url5google
+title_35 - Title5google
+snippet_36 - Snippet5google
+result_37 - 
+		
+goog:SearchEngineResultList_38 - 
+		
+url_39 - http://url5google
+title_40 - Title6google
+snippet_41 - Snippet6google
+result_42 - 
+		
+goog:SearchEngineResultList_43 - 
+		
+url_44 - http://url7google
+title_45 - Title7google
+snippet_46 - Snippet7google
+result_47 - 
+		
+goog:SearchEngineResultList_48 - 
+		
+url_49 - http://url8msn
+title_50 - Title8google
+snippet_51 - Snippet8google
+result_52 - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_54 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - -10
+msn:Total - 5
+msn:Results - 
+			
+msn:Title - Title1 - from MSN
+msn:Description - Snippet1 - from MSN
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_64 - 
+			
+msn:Title_65 - Title2 - from MSN
+msn:Description_66 - Snippet2 - from MSN
+msn:Url_67 - http://url2msn
+msn:Result_68 - 
+			
+msn:Results_69 - 
+			
+msn:Title_70 - Title3 - from MSN
+msn:Description_71 - Snippet3 - from MSN
+msn:Url_72 - http://url3google
+msn:Result_73 - 
+			
+msn:Results_74 - 
+			
+msn:Title_75 - Title4 - from MSN
+msn:Description_76 - Snippet4 - from MSN
+msn:Url_77 - http://url2google
+msn:Result_78 - 
+			
+msn:Results_79 - 
+			
+msn:Title_80 - Title5 - from MSN
+msn:Description_81 - Snippet5 - from MSN
+msn:Url_82 - http://url2msn
+msn:Result_83 - 
+			
+msn:Results_84 - 
+			
+msn:Title_85 - Title6 - from MSN
+msn:Description_86 - Snippet6 - from MSN
+msn:Url_87 - http://url6msn
+msn:Result_88 - 
+			
+msn:Results_89 - 
+			
+msn:Title_90 - Title7 - from MSN
+msn:Description_91 - Snippet7 - from MSN
+msn:Url_92 - http://url7google
+msn:Result_93 - 
+			
+msn:Results_94 - 
+			
+msn:Title_95 - Title8 - from MSN
+msn:Description_96 - Snippet8 - from MSN
+msn:Url_97 - http://url8msn
+msn:Result_98 - 
+			
+msn:Results_99 - 
+			
+msn:Title_100 - Title9 - from MSN
+msn:Description_101 - Snippet9 - from MSN
+msn:Url_102 - http://url9msn
+msn:Result_103 - 
+			
+msn:Results_104 - 
+			
+msn:Title_105 - Title10 - from MSN
+msn:Description_106 - Snippet10 - from MSN
+msn:Url_107 - http://url2msn
+msn:Result_108 - 
+			
+msn:Results_109 - 
+			
+msn:Title_110 - Title5 - from MSN
+msn:Description_111 - Snippet5 - from MSN
+msn:Url_112 - http://url2msn
+msn:Result_113 - 
+			
+msn:Response - 
+		
+tes:receiveSend_115 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 5
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 5
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[1]/met:title/text()
+tes:value_12 - "Title1google"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_20 - 
+		
+url_21 - http://url2google
+title_22 - Title2google
+snippet_23 - Snippet2google
+result_24 - 
+		
+goog:SearchEngineResultList_25 - 
+		
+url_26 - http://url2google
+title_27 - Title3google
+snippet_28 - Snippet3google
+result_29 - 
+		
+tes:receiveSend - 
+	
+tes:partnerTrack_31 - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 10
+msn:Total - 3
+msn:Results - 
+			
+msn:Title - Title1 - from MSN
+msn:Description - Snippet1 - from MSN
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_41 - 
+			
+msn:Title_42 - Title2 - from MSN
+msn:Description_43 - Snippet2 - from MSN
+msn:Url_44 - http://url2msn
+msn:Result_45 - 
+			
+msn:Results_46 - 
+			
+msn:Title_47 - Title3 - from MSN
+msn:Description_48 - Snippet3 - from MSN
+msn:Url_49 - http://url3google
+msn:Result_50 - 
+			
+msn:Response - 
+		
+tes:receiveSend_52 - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 2
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 2
+tes:expression_11 - met:MetaSearchProcessResponse/met:result[2]/met:title/text()
+tes:value_12 - "Title2msn"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - 0
+msn:Total - 2
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Description - Snippet1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_24 - 
+			
+msn:Title_25 - Title2msn
+msn:Description_26 - Snippet2msn
+msn:Url_27 - http://url2msn
+msn:Result_28 - 
+			
+msn:Response - 
+		
+tes:receiveSend - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:language - de
+met:MetaSearchProcessRequest_5 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_7 - 
+		
+met:maxResults - 10
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 2
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+goog:SearchEngineResultList - 
+		
+url - http://url1google
+title - Title1google
+snippet - Snippet1google
+result - 
+		
+goog:SearchEngineResultList_18 - 
+		
+url_19 - http://url2google
+title_20 - Title2google
+snippet_21 - Snippet2google
+result_22 - 
+		
+goog:SearchEngineResultList_23 - 
+		
+url_24 - http://url2google
+title_25 - Title3google
+snippet_26 - Snippet3google
+result_27 - 
+		
+tes:receiveSend - 
+	
+----------
+tes:clientTrack - 
+	
+met:MetaSearchProcessRequest - 
+		
+met:query - Philipp Lahm
+met:MetaSearchProcessRequest_3 - 
+		
+met:MetaSearchProcessRequest_4 - 
+		
+met:country - DE
+met:MetaSearchProcessRequest_6 - 
+		
+met:maxResults - 10
+tes:expression - count(met:MetaSearchProcessResponse/met:result)
+tes:value - 2
+tes:expression_10 - met:MetaSearchProcessResponse/met:result[2]/met:title/text()
+tes:value_11 - "Title3msn"
+tes:sendReceive - 
+	
+tes:partnerTrack - 
+	
+msn:SearchResponse - 
+		
+msn:Source - Web
+msn:Offset - -2
+msn:Total - 2
+msn:Results - 
+			
+msn:Title - Title1msn
+msn:Description - Snippet1msn
+msn:Url - http://url1msn
+msn:Result - 
+			
+msn:Results_23 - 
+			
+msn:Title_24 - Title2msn
+msn:Description_25 - Snippet2msn
+msn:Url_26 - http://url1msn
+msn:Result_27 - 
+			
+msn:Results_28 - 
+			
+msn:Title_29 - Title3msn
+msn:Url_30 - http://url3msn
+msn:Result_31 - 
+			
+msn:Response - 
+		
+tes:receiveSend - 
+	
+----------

@@ -1,0 +1,704 @@
+type - VARIABLE
+activityName - inputVariable
+----------
+type - VARIABLE
+activityName - outputVariable
+----------
+type - VARIABLE
+activityName - tempMSNResult
+----------
+type - VARIABLE
+activityName - div2counter_final
+----------
+type - VARIABLE
+activityName - Google_doGoogleSearch_OutputVariable
+----------
+type - VARIABLE
+activityName - maxGoogle
+----------
+type - VARIABLE
+activityName - done_msn
+----------
+type - VARIABLE
+activityName - div2counter_maxResults
+----------
+type - VARIABLE
+activityName - generalFault
+----------
+type - VARIABLE
+activityName - Google_doGoogleSearch_InputVariable
+----------
+type - VARIABLE
+activityName - counter
+----------
+type - VARIABLE
+activityName - currentItem
+----------
+type - VARIABLE
+activityName - MSNSearch_Search_OutputVariable
+----------
+type - VARIABLE
+activityName - maxMSN
+----------
+type - VARIABLE
+activityName - added
+----------
+type - VARIABLE
+activityName - done_google
+----------
+type - VARIABLE
+activityName - MSNSearch_Search_InputVariable
+----------
+type - VARIABLE
+activityName - doAdd
+----------
+type - VARIABLE
+activityName - tempGoogleResult
+----------
+activityName - CreateFault
+type - ASSIGN
+COPY
+FROM:
+client:MetaSearchProcessFault - 
+					 
+client:message - client:message
+client:MetaSearchProcessFault_2 - 
+					 
+client:root - client:root
+client:MetaSearchProcessFault_4 - 
+					 
+TO:
+part - payload
+variable - generalFault
+COPY
+FROM:
+xml-fragment - 'Problem while executing MetaSearch'
+TO:
+part - payload
+variable - generalFault
+bpel:query - client:message
+COPY
+FROM:
+xml-fragment - 'See instance for detail'
+TO:
+part - payload
+variable - generalFault
+bpel:query - client:root
+type - RECEIVE
+activityName - receiveInput
+partnerLink - client
+portType - {http://examples.bpelunit.org/MetaSearch}MetaSearch
+operation - process
+variable - inputVariable
+createInstance - yes
+messageExchange - null
+----------
+activityName - GoogleNotDone
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - false()
+TO:
+variable - done_google
+activityName - InitializeGoogleValues
+type - ASSIGN
+COPY
+FROM:
+bpel:literal - 
+									
+key - key
+query - query
+restrict - restrict
+lr - lr
+start - 0
+max - 0
+typens:GoogleSearchRequestElement - 
+									
+TO:
+part - request
+variable - Google_doGoogleSearch_InputVariable
+COPY
+FROM:
+xml-fragment - string('insert KEY here')
+TO:
+part - request
+variable - Google_doGoogleSearch_InputVariable
+bpel:query - key
+COPY
+FROM:
+part - payload
+variable - inputVariable
+bpel:query - client:query
+TO:
+part - request
+variable - Google_doGoogleSearch_InputVariable
+bpel:query - query
+COPY
+FROM:
+part - payload
+variable - inputVariable
+bpel:query - client:country
+TO:
+part - request
+variable - Google_doGoogleSearch_InputVariable
+bpel:query - restrict
+COPY
+FROM:
+part - payload
+variable - inputVariable
+bpel:query - client:language
+TO:
+part - request
+variable - Google_doGoogleSearch_InputVariable
+bpel:query - lr
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+part - request
+variable - Google_doGoogleSearch_InputVariable
+bpel:query - start
+COPY
+FROM:
+xml-fragment - number(10)
+TO:
+part - request
+variable - Google_doGoogleSearch_InputVariable
+bpel:query - max
+activityName - Google
+type - INVOKE
+inputVariable - Google_doGoogleSearch_InputVariable
+outputVariable - Google_doGoogleSearch_OutputVariable
+operation - doGoogleSearch
+partnerLink - Google
+portType - {http://examples.bpelunit.org/GoogleBridge}GoogleSearchPort
+----------
+activityName - GoogleDone
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - true()
+TO:
+variable - done_google
+activityName - MSNNotDone
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - false()
+TO:
+variable - done_msn
+activityName - InitializeMSNValues
+type - ASSIGN
+COPY
+FROM:
+tns:AppID - tns:AppID
+tns:Query - tns:Query
+tns:CultureInfo - tns:CultureInfo
+tns:SafeSearch - Moderate
+tns:Flags - None
+tns:Latitude - 0.0
+tns:Longitude - 0.0
+tns:Radius - 5.0
+tns:Source - Web
+tns:Offset - 0
+tns:Count - 10
+tns:ResultFields - Title Description Url
+tns:Search - 
+									
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+COPY
+FROM:
+xml-fragment - string('Insert key here')
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:AppID
+COPY
+FROM:
+part - payload
+variable - inputVariable
+bpel:query - client:query
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:Query
+COPY
+FROM:
+xml-fragment - 'dummy'
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:CultureInfo
+COPY
+FROM:
+xml-fragment - 'Off'
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:SafeSearch
+COPY
+FROM:
+xml-fragment - 'None'
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:Flags
+COPY
+FROM:
+xml-fragment - 'Web'
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:Requests/ns2:SourceRequest/ns2:Source
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:Requests/ns2:SourceRequest/ns2:Offset
+COPY
+FROM:
+xml-fragment - number(15)
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:Requests/ns2:SourceRequest/ns2:Count
+COPY
+FROM:
+xml-fragment - 'All'
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:Requests/ns2:SourceRequest/ns2:ResultFields
+type - IF
+activityName - Switch_10
+condition - (($inputVariable.payload/client:country != '') and ($inputVariable.payload/client:language != ''))
+else - yes
+----------
+activityName - ConcatLangAndCountry
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - concat(concat($inputVariable.payload/client:language, '-'), $inputVariable.payload/client:country)
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:CultureInfo
+activityName - UseDefaulten-US
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - 'en-US'
+TO:
+part - parameters
+variable - MSNSearch_Search_InputVariable
+bpel:query - ns2:Request/ns2:CultureInfo
+activityName - MSNSearch
+type - INVOKE
+inputVariable - MSNSearch_Search_InputVariable
+outputVariable - MSNSearch_Search_OutputVariable
+operation - Search
+partnerLink - MSN
+portType - {http://schemas.microsoft.com/MSNSearch/2005/09/fex}MSNSearchPortType
+----------
+activityName - MSNDone
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - true()
+TO:
+variable - done_msn
+type - IF
+activityName - IsDoneAtAll
+condition - ((boolean($done_google) = true()) or (boolean($done_msn) = true()))
+else - yes
+----------
+activityName - CounterToOne
+type - ASSIGN
+COPY
+FROM:
+client:noResult - 0
+client:noFromGoogle - 0
+client:noFromMSN - 0
+client:MetaSearchProcessResponse - 
+									
+TO:
+part - payload
+variable - outputVariable
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+variable - added
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noResult
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noFromGoogle
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noFromMSN
+COPY
+FROM:
+xml-fragment - $inputVariable.payload/client:maxResults
+TO:
+variable - div2counter_maxResults
+type - IF
+activityName - Switch_2
+condition - $done_msn
+else - yes
+----------
+activityName - GetMaxMSDNNo
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - count($MSNSearch_Search_OutputVariable.parameters/ns2:Response/ns2:Responses/ns2:SourceResponse/ns2:Results/ns2:Result)
+TO:
+variable - maxMSN
+COPY
+FROM:
+variable - maxMSN
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noFromMSN
+activityName - MaxNo0
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+variable - maxMSN
+type - IF
+activityName - Switch_1
+condition - $done_google
+else - yes
+----------
+activityName - GetMaxGoogleNo
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - count($Google_doGoogleSearch_OutputVariable.return/result)
+TO:
+variable - maxGoogle
+COPY
+FROM:
+variable - maxGoogle
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noFromGoogle
+activityName - MaxNo0
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+variable - maxGoogle
+type - IF
+activityName - GoogleHasMoreResults
+condition - $maxGoogle > $maxMSN
+else - yes
+----------
+activityName - null
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - -1 + 2*$maxGoogle
+TO:
+variable - div2counter_final
+activityName - null
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - -1 + 2*$maxMSN
+TO:
+variable - div2counter_final
+type - IF
+activityName - NotEnoughResultsToReachMax
+condition - $maxGoogle + $maxMSN < $div2counter_maxResults
+else - no
+----------
+activityName - null
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - $maxGoogle + $maxMSN
+TO:
+xml-fragment - $div2counter_maxResults
+type - IF
+activityName - ClientResultsCondition
+condition - $div2counter_maxResults > 0
+else - no
+----------
+type - FOREACH
+activityName - InterleaveResults
+startCounterValue - 0
+finalCounterValue - $div2counter_final
+pararel - no
+completionCondition - 
+----------
+activityName - InitializeCounter
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - 1 + floor($div2counter div 2)
+TO:
+variable - counter
+type - IF
+activityName - IfEvenIteration
+condition - (($div2counter mod 2) = 0)
+else - yes
+----------
+type - IF
+activityName - GoogleHasResult
+condition - ($counter <= $maxGoogle)
+else - yes
+----------
+activityName - AssignTempGoogleElement
+type - ASSIGN
+COPY
+FROM:
+url - url
+title - title
+snippet - snippet
+typens:result - 
+										
+bpel:literal - 
+										
+TO:
+variable - tempGoogleResult
+COPY
+FROM:
+xml-fragment - $Google_doGoogleSearch_OutputVariable.return/result[$counter]
+TO:
+variable - tempGoogleResult
+activityName - CreateGoogleElement
+type - ASSIGN
+COPY
+FROM:
+bpel:literal - 
+										
+client:url - client:url
+client:title - client:title
+client:snippet - client:snippet
+client:from - client:from
+client:result - 
+											
+bpel:literal_6 - 
+											
+TO:
+variable - currentItem
+COPY
+FROM:
+variable - tempGoogleResult
+bpel:query - url
+TO:
+variable - currentItem
+bpel:query - client:url
+COPY
+FROM:
+variable - tempGoogleResult
+bpel:query - title
+TO:
+variable - currentItem
+bpel:query - client:title
+COPY
+FROM:
+variable - tempGoogleResult
+bpel:query - snippet
+TO:
+variable - currentItem
+bpel:query - client:snippet
+COPY
+FROM:
+xml-fragment - 'Google'
+TO:
+variable - currentItem
+bpel:query - client:from
+type - IF
+activityName - MSNHasResult
+condition - ($counter <= $maxMSN)
+else - yes
+----------
+activityName - AssignTempMSNElement
+type - ASSIGN
+COPY
+FROM:
+tns:Title - tns:Title
+tns:Description - tns:Description
+tns:Url - tns:Url
+tns:DisplayUrl - tns:DisplayUrl
+tns:CacheUrl - tns:CacheUrl
+tns:Source - tns:Source
+tns:SearchTags - tns:SearchTags
+tns:Result - 
+												
+bpel:literal - 
+												
+TO:
+variable - tempMSNResult
+COPY
+FROM:
+xml-fragment - $MSNSearch_Search_OutputVariable.parameters/ns2:Response/ns2:Responses/ns2:SourceResponse/ns2:Results/ns2:Result[$counter]
+TO:
+variable - tempMSNResult
+activityName - CreateMSNElement
+type - ASSIGN
+COPY
+FROM:
+client:url - client:url
+client:title - client:title
+client:snippet - client:snippet
+client:from - client:from
+client:result - 
+											
+bpel:literal - 
+											
+TO:
+variable - currentItem
+COPY
+FROM:
+variable - tempMSNResult
+bpel:query - ns2:Url
+TO:
+variable - currentItem
+bpel:query - client:url
+COPY
+FROM:
+variable - tempMSNResult
+bpel:query - ns2:Title
+TO:
+variable - currentItem
+bpel:query - client:title
+COPY
+FROM:
+xml-fragment - 'dummy'
+TO:
+variable - currentItem
+bpel:query - client:snippet
+COPY
+FROM:
+xml-fragment - 'MSN'
+TO:
+variable - currentItem
+bpel:query - client:from
+type - IF
+activityName - MSNResultHasDescription
+condition - (count($tempMSNResult/ns2:Description) > 0)
+else - yes
+----------
+activityName - AddDescription
+type - ASSIGN
+COPY
+FROM:
+variable - tempMSNResult
+bpel:query - ns2:Description
+TO:
+variable - currentItem
+bpel:query - client:snippet
+activityName - InitializeDoAdd
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - true()
+TO:
+variable - doAdd
+type - FOREACH
+activityName - ScanResultsForMatch
+startCounterValue - 1
+finalCounterValue - count($outputVariable.payload/client:result)
+pararel - no
+completionCondition - no
+----------
+type - IF
+activityName - Switch_6
+condition - $outputVariable.payload/client:result[$currentResultNumber]/client:url = $currentItem/client:url
+else - no
+----------
+activityName - doNotAdd
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - false()
+TO:
+variable - doAdd
+type - IF
+activityName - Switch_7
+condition - ($doAdd = true())
+else - yes
+----------
+activityName - AddAnyElement
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - 
+									bpel:doXslTransform("project:/xslt/results.xsl", $outputVariable.payload, "currentItem", $currentItem)
+								
+TO:
+xml-fragment - $outputVariable.payload
+activityName - AddedPlusOne
+type - ASSIGN
+COPY
+FROM:
+xml-fragment - ($added + 1)
+TO:
+variable - added
+activityName - CopyResultNumber
+type - ASSIGN
+COPY
+FROM:
+variable - added
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noResult
+activityName - AssignZeroToOutput
+type - ASSIGN
+COPY
+FROM:
+client:noResult - 0
+client:noFromGoogle - 0
+client:noFromMSN - 0
+client:MetaSearchProcessResponse - 
+							
+TO:
+part - payload
+variable - outputVariable
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noResult
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noFromGoogle
+COPY
+FROM:
+xml-fragment - number(0)
+TO:
+part - payload
+variable - outputVariable
+bpel:query - client:noFromMSN

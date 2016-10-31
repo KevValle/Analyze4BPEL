@@ -1,0 +1,16 @@
+<definitions
+    
+     targetNamespace="http://schemas.microsoft.com/MSNSearch/2005/09/fex"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://schemas.microsoft.com/MSNSearch/2005/09/fex"
+     xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <import namespace="http://schemas.microsoft.com/MSNSearch/2005/09/fex" location="msnsearch.wsdl"/>
+    <plnk:partnerLinkType name="MSNSearchPortType_PL">
+        <plnk:role name="MSNSearchPortType_Role">
+            <plnk:portType name="tns:MSNSearchPortType"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

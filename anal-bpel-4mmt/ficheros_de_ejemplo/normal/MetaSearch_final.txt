@@ -1,0 +1,243 @@
+type - VARIABLE
+activityName - div2counter_final
+----------
+type - VARIABLE
+activityName - div2counter_maxResults
+----------
+type - VARIABLE
+activityName - added
+----------
+to - {"part":"payload","variable":"generalFault"}
+from - {"client:root":"client:root","client:message":"client:message","client:MetaSearchProcessFault_4":"\n\t\t\t\t\t ","client:MetaSearchProcessFault_2":"\n\t\t\t\t\t ","client:MetaSearchProcessFault":"\n\t\t\t\t\t "}
+activity - {"type":"ASSIGN","activityName":"CreateFault"}
+----------
+to - {"bpel:query":"client:root","part":"payload","variable":"generalFault"}
+from - {"xml-fragment":"'See instance for detail'"}
+activity - {}
+----------
+to - {"part":"request","variable":"Google_doGoogleSearch_InputVariable"}
+from - {"typens:GoogleSearchRequestElement":"\n\t\t\t\t\t\t\t\t\t","max":"0","lr":"lr","start":"0","query":"query","key":"key","restrict":"restrict","bpel:literal":"\n\t\t\t\t\t\t\t\t\t"}
+activity - {"type":"ASSIGN","activityName":"InitializeGoogleValues"}
+----------
+to - {"bpel:query":"start","part":"request","variable":"Google_doGoogleSearch_InputVariable"}
+from - {"xml-fragment":"number(0)"}
+activity - {}
+----------
+to - {"bpel:query":"max","part":"request","variable":"Google_doGoogleSearch_InputVariable"}
+from - {"xml-fragment":"number(10)"}
+activity - {}
+----------
+to - {"part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"tns:CultureInfo":"tns:CultureInfo","tns:Longitude":"0.0","tns:Source":"Web","tns:ResultFields":"Title Description Url","tns:Latitude":"0.0","tns:Count":"10","tns:Search":"\n\t\t\t\t\t\t\t\t\t","tns:Flags":"None","tns:SafeSearch":"Moderate","tns:Offset":"0","tns:Query":"tns:Query","tns:AppID":"tns:AppID","tns:Radius":"5.0"}
+activity - {"type":"ASSIGN","activityName":"InitializeMSNValues"}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:AppID","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"string('Insert key here')"}
+activity - {}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:Query","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"bpel:query":"client:query","part":"payload","variable":"inputVariable"}
+activity - {}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:CultureInfo","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"'dummy'"}
+activity - {}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:SafeSearch","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"'Off'"}
+activity - {}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:Flags","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"'None'"}
+activity - {}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:Requests\/ns2:SourceRequest\/ns2:Source","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"'Web'"}
+activity - {}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:Requests\/ns2:SourceRequest\/ns2:Offset","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"number(0)"}
+activity - {}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:Requests\/ns2:SourceRequest\/ns2:Count","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"number(15)"}
+activity - {}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:Requests\/ns2:SourceRequest\/ns2:ResultFields","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"'All'"}
+activity - {}
+----------
+else - yes
+condition - (($inputVariable.payload/client:country != '') and ($inputVariable.payload/client:language != ''))
+type - IF
+activityName - Switch_10
+----------
+to - {"bpel:query":"ns2:Request\/ns2:CultureInfo","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"concat(concat($inputVariable.payload\/client:language, '-'), $inputVariable.payload\/client:country)"}
+activity - {"type":"ASSIGN","activityName":"ConcatLangAndCountry"}
+----------
+to - {"bpel:query":"ns2:Request\/ns2:CultureInfo","part":"parameters","variable":"MSNSearch_Search_InputVariable"}
+from - {"xml-fragment":"'en-US'"}
+activity - {"type":"ASSIGN","activityName":"UseDefaulten-US"}
+----------
+portType - {http://schemas.microsoft.com/MSNSearch/2005/09/fex}MSNSearchPortType
+operation - Search
+inputVariable - MSNSearch_Search_InputVariable
+partnerLink - MSN
+type - INVOKE
+outputVariable - MSNSearch_Search_OutputVariable
+activityName - MSNSearch
+----------
+to - {"part":"payload","variable":"outputVariable"}
+from - {"client:noResult":"0","client:MetaSearchProcessResponse":"\n\t\t\t\t\t\t\t\t\t","client:noFromMSN":"0","client:noFromGoogle":"0"}
+activity - {"type":"ASSIGN","activityName":"CounterToOne"}
+----------
+to - {"variable":"added"}
+from - {"xml-fragment":"number(0)"}
+activity - {}
+----------
+to - {"bpel:query":"client:noResult","part":"payload","variable":"outputVariable"}
+from - {"xml-fragment":"number(0)"}
+activity - {}
+----------
+to - {"bpel:query":"client:noFromGoogle","part":"payload","variable":"outputVariable"}
+from - {"xml-fragment":"number(0)"}
+activity - {}
+----------
+to - {"bpel:query":"client:noFromMSN","part":"payload","variable":"outputVariable"}
+from - {"xml-fragment":"number(0)"}
+activity - {}
+----------
+to - {"variable":"div2counter_maxResults"}
+from - {"xml-fragment":"$inputVariable.payload\/client:maxResults"}
+activity - {}
+----------
+else - yes
+condition - $done_msn
+type - IF
+activityName - Switch_2
+----------
+to - {"variable":"maxMSN"}
+from - {"xml-fragment":"count($MSNSearch_Search_OutputVariable.parameters\/ns2:Response\/ns2:Responses\/ns2:SourceResponse\/ns2:Results\/ns2:Result)"}
+activity - {"type":"ASSIGN","activityName":"GetMaxMSDNNo"}
+----------
+to - {"variable":"maxMSN"}
+from - {"xml-fragment":"number(0)"}
+activity - {"type":"ASSIGN","activityName":"MaxNo0"}
+----------
+else - yes
+condition - $done_google
+type - IF
+activityName - Switch_1
+----------
+to - {"variable":"maxGoogle"}
+from - {"xml-fragment":"count($Google_doGoogleSearch_OutputVariable.return\/result)"}
+activity - {"type":"ASSIGN","activityName":"GetMaxGoogleNo"}
+----------
+to - {"variable":"maxGoogle"}
+from - {"xml-fragment":"number(0)"}
+activity - {"type":"ASSIGN","activityName":"MaxNo0"}
+----------
+to - {"variable":"div2counter_final"}
+from - {"xml-fragment":"-1 + 2*$maxGoogle"}
+activity - {"type":"ASSIGN","activityName":null}
+----------
+to - {"variable":"div2counter_final"}
+from - {"xml-fragment":"-1 + 2*$maxMSN"}
+activity - {"type":"ASSIGN","activityName":null}
+----------
+else - no
+condition - $maxGoogle + $maxMSN < $div2counter_maxResults
+type - IF
+activityName - NotEnoughResultsToReachMax
+----------
+to - {"xml-fragment":"$div2counter_maxResults"}
+from - {"xml-fragment":"$maxGoogle + $maxMSN"}
+activity - {"type":"ASSIGN","activityName":null}
+----------
+else - no
+condition - $div2counter_maxResults > 0
+type - IF
+activityName - ClientResultsCondition
+----------
+finalCounterValue - $div2counter_final
+pararel - no
+type - FOREACH
+activityName - InterleaveResults
+startCounterValue - 0
+completionCondition - 
+----------
+to - {"variable":"counter"}
+from - {"xml-fragment":"1 + floor($div2counter div 2)"}
+activity - {"type":"ASSIGN","activityName":"InitializeCounter"}
+----------
+else - yes
+condition - (($div2counter mod 2) = 0)
+type - IF
+activityName - IfEvenIteration
+----------
+to - {"variable":"tempGoogleResult"}
+from - {"title":"title","typens:result":"\n\t\t\t\t\t\t\t\t\t\t","snippet":"snippet","url":"url","bpel:literal":"\n\t\t\t\t\t\t\t\t\t\t"}
+activity - {"type":"ASSIGN","activityName":"AssignTempGoogleElement"}
+----------
+to - {"variable":"tempGoogleResult"}
+from - {"xml-fragment":"$Google_doGoogleSearch_OutputVariable.return\/result[$counter]"}
+activity - {}
+----------
+to - {"variable":"currentItem"}
+from - {"client:snippet":"client:snippet","bpel:literal_6":"\n\t\t\t\t\t\t\t\t\t\t\t","client:url":"client:url","client:from":"client:from","bpel:literal":"\n\t\t\t\t\t\t\t\t\t\t","client:title":"client:title","client:result":"\n\t\t\t\t\t\t\t\t\t\t\t"}
+activity - {"type":"ASSIGN","activityName":"CreateGoogleElement"}
+----------
+to - {"bpel:query":"client:url","variable":"currentItem"}
+from - {"bpel:query":"url","variable":"tempGoogleResult"}
+activity - {}
+----------
+to - {"bpel:query":"client:title","variable":"currentItem"}
+from - {"bpel:query":"title","variable":"tempGoogleResult"}
+activity - {}
+----------
+to - {"bpel:query":"client:snippet","variable":"currentItem"}
+from - {"bpel:query":"snippet","variable":"tempGoogleResult"}
+activity - {}
+----------
+to - {"variable":"tempMSNResult"}
+from - {"xml-fragment":"$MSNSearch_Search_OutputVariable.parameters\/ns2:Response\/ns2:Responses\/ns2:SourceResponse\/ns2:Results\/ns2:Result[$counter]"}
+activity - {}
+----------
+to - {"variable":"currentItem"}
+from - {"client:snippet":"client:snippet","client:url":"client:url","client:from":"client:from","client:title":"client:title","client:result":"\n\t\t\t\t\t\t\t\t\t\t\t","bpel:literal":"\n\t\t\t\t\t\t\t\t\t\t\t"}
+activity - {"type":"ASSIGN","activityName":"CreateMSNElement"}
+----------
+to - {"bpel:query":"client:url","variable":"currentItem"}
+from - {"bpel:query":"ns2:Url","variable":"tempMSNResult"}
+activity - {}
+----------
+to - {"bpel:query":"client:title","variable":"currentItem"}
+from - {"bpel:query":"ns2:Title","variable":"tempMSNResult"}
+activity - {}
+----------
+to - {"bpel:query":"client:snippet","variable":"currentItem"}
+from - {"xml-fragment":"'dummy'"}
+activity - {}
+----------
+else - yes
+condition - (count($tempMSNResult/ns2:Description) > 0)
+type - IF
+activityName - MSNResultHasDescription
+----------
+to - {"bpel:query":"client:snippet","variable":"currentItem"}
+from - {"bpel:query":"ns2:Description","variable":"tempMSNResult"}
+activity - {"type":"ASSIGN","activityName":"AddDescription"}
+----------
+finalCounterValue - count($outputVariable.payload/client:result)
+pararel - no
+type - FOREACH
+activityName - ScanResultsForMatch
+startCounterValue - 1
+completionCondition - no
+----------
+else - no
+condition - $outputVariable.payload/client:result[$currentResultNumber]/client:url = $currentItem/client:url
+type - IF
+activityName - Switch_6
+----------

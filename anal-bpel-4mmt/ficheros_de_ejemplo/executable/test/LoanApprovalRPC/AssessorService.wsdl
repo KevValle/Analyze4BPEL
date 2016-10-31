@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (C) 2009 Antonio García Domínguez
+
+   This file is part of the LoanApprovalRPC composition in the UCASE
+   WS-BPEL composition repository.
+
+   This program is free software: you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<definitions name="ConcreteAssessorService" targetNamespace="http://j2ee.netbeans.org/wsdl/ConcreteAssessorService"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/ConcreteAssessorService" xmlns:ns0="http://j2ee.netbeans.org/wsdl/loanServicePT" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:plink="http://docs.oasis-open.org/wsbpel/2.0/plnktype">
+    <import location="loanServicePT.wsdl" namespace="http://j2ee.netbeans.org/wsdl/loanServicePT"/>
+    <types/>
+    <binding name="RiskAssessmentBinding" type="ns0:riskAssessmentPT">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+        <operation name="check">
+            <soap:operation/>
+            <input name="input1">
+                <soap:body use="literal"/>
+            </input>
+            <output name="output1">
+                <soap:body use="literal"/>
+            </output>
+            <fault name="loanProcessFault">
+                <soap:fault name="loanProcessFault"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="RiskAssessmentService">
+        <port name="RiskAssessmentPort" binding="tns:RiskAssessmentBinding">
+            <soap:address location="http://localhost:7777/ws/assessor"/>
+        </port>
+    </service>
+    <plink:partnerLinkType name="riskAssessmentPLT">
+        <plink:role name="riskAssessmentRole" portType="ns0:riskAssessmentPT"/>
+    </plink:partnerLinkType>
+</definitions>

@@ -1,0 +1,1486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tes:testSuite xmlns:msn="http://schemas.microsoft.com/MSNSearch/2005/09/fex" xmlns:met="http://examples.bpelunit.org/MetaSearch" xmlns:tes="http://www.bpelunit.org/schema/testSuite" xmlns:goog="http://examples.bpelunit.org/GoogleBridge">
+  <tes:name>MetaSearchTest</tes:name>
+  <tes:baseURL>http://localhost:7777/ws</tes:baseURL>
+  <tes:deployment>
+    <tes:put name="MetaSearch" type="activebpel">
+      <tes:wsdl>MetaSearch.wsdl</tes:wsdl>
+      <tes:property name="BPRFile">MetaSearch.bpr</tes:property>
+    </tes:put>
+    <tes:partner name="Google" wsdl="GoogleBridge.wsdl"/>
+    <tes:partner name="MSN" wsdl="msnsearch.wsdl"/>
+  </tes:deployment>
+  <tes:testCases>
+    <tes:testCase name="MetaSearchTest" basedOn="SendPhilippLahmData" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>3</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>3</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url3google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN"/>
+    </tes:testCase>
+    <tes:testCase name="Simple3FromMSN" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>3</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>3</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google"/>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>3</msn:Total>
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Description>Snippet1msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Description>Snippet2msn</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3msn</msn:Title>
+			  <msn:Description>Snippet3msn</msn:Description>
+			  <msn:Url>http://url3msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="Combined6AssertAllTaken" basedOn="" abstract="false" vary="true">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>6</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>6</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[1]/met:title/text()</tes:expression>
+	      <tes:value>"Title1google"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[2]/met:title/text()</tes:expression>
+	      <tes:value>"Title1msn"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="0,2">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url3google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="2,0">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>3</msn:Total>
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Description>Snippet1msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Description>Snippet2msn</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3msn</msn:Title>
+			  <msn:Description>Snippet3msn</msn:Description>
+			  <msn:Url>http://url3msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="DiffNoMSNGoogle" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>4</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>4</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[1]/met:title/text()</tes:expression>
+	      <tes:value>"Title1google"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[2]/met:title/text()</tes:expression>
+	      <tes:value>"Title1msn"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[3]/met:title/text()</tes:expression>
+	      <tes:value>"Title2msn"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[4]/met:title/text()</tes:expression>
+	      <tes:value>"Title3msn"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>3</msn:Total>
+		      
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Description>Snippet1msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Description>Snippet2msn</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3msn</msn:Title>
+			  <msn:Description>Snippet3msn</msn:Description>
+			  <msn:Url>http://url3msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="MaxItOut" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>3</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>3</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[1]/met:title/text()</tes:expression>
+	      <tes:value>"Title1google"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[2]/met:title/text()</tes:expression>
+	      <tes:value>"Title1msn"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[3]/met:title/text()</tes:expression>
+	      <tes:value>"Title2google"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url3google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>3</msn:Total>
+		      
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Description>Snippet1msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Description>Snippet2msn</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3msn</msn:Title>
+			  <msn:Description>Snippet3msn</msn:Description>
+			  <msn:Url>http://url3msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="Duplicates" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" 
+			 operation="process" 
+			 xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>4</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>1</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[1]/met:title/text()</tes:expression>
+	      <tes:value>"Title1google"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>1</msn:Total>
+		      
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1 - from MSN</msn:Title>
+			  <msn:Description>Snippet1 - from MSN</msn:Description>
+			  <msn:Url>http://url1google</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="MSNWithoutDescription" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>3</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>3</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google"/>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>3</msn:Total>
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3msn</msn:Title>
+			  <msn:Url>http://url3msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="MSNWithoutLanguageOrCountry" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language></met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>2</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>2</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google"/>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>2</msn:Total>
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Description>Snippet1msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Description>Snippet2msn</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="Simple3FromGoogleMaxResultsVariable" basedOn="SendPhilippLahmData" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>-1</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>0</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url3google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN"/>
+    </tes:testCase>
+    <tes:testCase name="DuplicatesThree" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" 
+			 operation="process" 
+			 xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>6</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>3</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[1]/met:title/text()</tes:expression>
+	      <tes:value>"Title1google"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url3google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>3</msn:Total>		      
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1 - from MSN</msn:Title>
+			  <msn:Description>Snippet1 - from MSN</msn:Description>
+			  <msn:Url>http://url1google</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2 - from MSN</msn:Title>
+			  <msn:Description>Snippet2 - from MSN</msn:Description>
+			  <msn:Url>http://url2google</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3 - from MSN</msn:Title>
+			  <msn:Description>Snippet3 - from MSN</msn:Description>
+			  <msn:Url>http://url3google</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="DuplicatesThreeB" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" 
+			 operation="process" 
+			 xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>6</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>3</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[1]/met:title/text()</tes:expression>
+	      <tes:value>"Title1google"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url3google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>3</msn:Total>		      
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1 - from MSN</msn:Title>
+			  <msn:Description>Snippet1 - from MSN</msn:Description>
+			  <msn:Url>http://url1google</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2 - from MSN</msn:Title>
+			  <msn:Description>Snippet2 - from MSN</msn:Description>
+			  <msn:Url>http://url2google</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3 - from MSN</msn:Title>
+			  <msn:Description>Snippet3 - from MSN</msn:Description>
+			  <msn:Url>http://url3google</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="10Results" basedOn="" abstract="false" vary="true">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>10</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>10</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[1]/met:title/text()</tes:expression>
+	      <tes:value>"Title1google"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[2]/met:title/text()</tes:expression>
+	      <tes:value>"Title1msn"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[3]/met:title/text()</tes:expression>
+	      <tes:value>"Title2google"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[4]/met:title/text()</tes:expression>
+	      <tes:value>"Title2msn"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[5]/met:title/text()</tes:expression>
+	      <tes:value>"Title3google"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[6]/met:title/text()</tes:expression>
+	      <tes:value>"Title3msn"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[7]/met:title/text()</tes:expression>
+	      <tes:value>"Title4google"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[8]/met:title/text()</tes:expression>
+	      <tes:value>"Title4msn"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[9]/met:title/text()</tes:expression>
+	      <tes:value>"Title5google"</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[10]/met:title/text()</tes:expression>
+	      <tes:value>"Title6google"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="0,2">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url3google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+		<result>
+		  <url>http://url4google</url>
+		  <title>Title4google</title>
+		  <snippet>Snippet4google</snippet>
+		</result>
+		<result>
+		  <url>http://url5google</url>
+		  <title>Title5google</title>
+		  <snippet>Snippet5google</snippet>
+		</result>
+		<result>
+		  <url>http://url6google</url>
+		  <title>Title6google</title>
+		  <snippet>Snippet6google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="2,0">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>-3</msn:Offset>
+		      <msn:Total>4</msn:Total>
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Description>Snippet1msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Description>Snippet2msn</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3msn</msn:Title>
+			  <msn:Description>Snippet3msn</msn:Description>
+			  <msn:Url>http://url3msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title4msn</msn:Title>
+			  <msn:Description>Snippet4msn</msn:Description>
+			  <msn:Url>http://url4msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="DuplicatesMix10" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" 
+			 operation="process" 
+			 xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>12</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>11</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>url1msn</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+		<result>
+		  <url>http://url4google</url>
+		  <title>Title4google</title>
+		  <snippet>Snippet4google</snippet>
+		</result>
+		<result>
+		  <url>http://url5google</url>
+		  <title>Title5google</title>
+		  <snippet>Snippet5google</snippet>
+		</result>
+		<result>
+		  <url>http://url5google</url>
+		  <title>Title6google</title>
+		  <snippet>Snippet6google</snippet>
+		</result>
+		<result>
+		  <url>http://url7google</url>
+		  <title>Title7google</title>
+		  <snippet>Snippet7google</snippet>
+		</result>
+		<result>
+		  <url>http://url8msn</url>
+		  <title>Title8google</title>
+		  <snippet>Snippet8google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>-10</msn:Offset>
+		      <msn:Total>5</msn:Total>		      
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1 - from MSN</msn:Title>
+			  <msn:Description>Snippet1 - from MSN</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2 - from MSN</msn:Title>
+			  <msn:Description>Snippet2 - from MSN</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3 - from MSN</msn:Title>
+			  <msn:Description>Snippet3 - from MSN</msn:Description>
+			  <msn:Url>http://url3google</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title4 - from MSN</msn:Title>
+			  <msn:Description>Snippet4 - from MSN</msn:Description>
+			  <msn:Url>http://url2google</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title5 - from MSN</msn:Title>
+			  <msn:Description>Snippet5 - from MSN</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title6 - from MSN</msn:Title>
+			  <msn:Description>Snippet6 - from MSN</msn:Description>
+			  <msn:Url>http://url6msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title7 - from MSN</msn:Title>
+			  <msn:Description>Snippet7 - from MSN</msn:Description>
+			  <msn:Url>http://url7google</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title8 - from MSN</msn:Title>
+			  <msn:Description>Snippet8 - from MSN</msn:Description>
+			  <msn:Url>http://url8msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title9 - from MSN</msn:Title>
+			  <msn:Description>Snippet9 - from MSN</msn:Description>
+			  <msn:Url>http://url9msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title10 - from MSN</msn:Title>
+			  <msn:Description>Snippet10 - from MSN</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title5 - from MSN</msn:Title>
+			  <msn:Description>Snippet5 - from MSN</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="DuplicatesMix" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" 
+			 operation="process" 
+			 xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>5</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>5</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[1]/met:title/text()</tes:expression>
+	      <tes:value>"Title1google"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>10</msn:Offset>
+		      <msn:Total>3</msn:Total>		      
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1 - from MSN</msn:Title>
+			  <msn:Description>Snippet1 - from MSN</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2 - from MSN</msn:Title>
+			  <msn:Description>Snippet2 - from MSN</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3 - from MSN</msn:Title>
+			  <msn:Description>Snippet3 - from MSN</msn:Description>
+			  <msn:Url>http://url3google</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="NotAllTaken" basedOn="" abstract="false" vary="true">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>2</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>2</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[2]/met:title/text()</tes:expression>
+	      <tes:value>"Title2msn"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="2,0">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>0</msn:Offset>
+		      <msn:Total>2</msn:Total>
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Description>Snippet1msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Description>Snippet2msn</msn:Description>
+			  <msn:Url>http://url2msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="NotAllTakenB" basedOn="" abstract="false" vary="false">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>10</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>2</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="NotAllTakenC" basedOn="" abstract="false" vary="true">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language></met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>10</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>2</tes:value>
+	    </tes:condition>
+	    <tes:condition>
+	      <tes:expression>met:MetaSearchProcessResponse/met:result[2]/met:title/text()</tes:expression>
+	      <tes:value>"Title3msn"</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="2,0">
+	    <tes:data>
+	      <msn:SearchResponse>
+		<msn:Response>
+		  <msn:Responses>
+		    <msn:SourceResponse>
+		      <msn:Source>Web</msn:Source>
+		      <msn:Offset>-2</msn:Offset>
+		      <msn:Total>2</msn:Total>
+		      <msn:Results>
+			<msn:Result>
+			  <msn:Title>Title1msn</msn:Title>
+			  <msn:Description>Snippet1msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title2msn</msn:Title>
+			  <msn:Description>Snippet2msn</msn:Description>
+			  <msn:Url>http://url1msn</msn:Url>
+			</msn:Result>
+			<msn:Result>
+			  <msn:Title>Title3msn</msn:Title>
+			  <msn:Url>http://url3msn</msn:Url>
+			</msn:Result>
+		      </msn:Results>
+		    </msn:SourceResponse>
+		  </msn:Responses>
+		</msn:Response>
+	      </msn:SearchResponse>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+    <tes:testCase name="MSNRequests" basedOn="" abstract="false" vary="true">
+      <tes:clientTrack>
+	<tes:sendReceive service="met:MetaSearch" port="MetaSearchPort" operation="process" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="">
+	    <tes:data>
+	      <met:MetaSearchProcessRequest>
+		<met:query>Philipp Lahm</met:query>
+		<met:language>de</met:language>
+		<met:country>DE</met:country>
+		<met:maxResults>6</met:maxResults>
+	      </met:MetaSearchProcessRequest>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false">
+	    <tes:condition>
+	      <tes:expression>count(met:MetaSearchProcessResponse/met:result)</tes:expression>
+	      <tes:value>0</tes:value>
+	    </tes:condition>
+	  </tes:receive>
+	</tes:sendReceive>
+      </tes:clientTrack>
+      <tes:partnerTrack name="Google">
+	<tes:receiveSend service="goog:GoogleSearchService" port="GoogleSearchPort" operation="doGoogleSearch">
+	  <tes:send fault="false" delaySequence="0,2">
+	    <tes:data>
+	      <goog:SearchEngineResultList>
+		<result>
+		  <url>http://url1google</url>
+		  <title>Title1google</title>
+		  <snippet>Snippet1google</snippet>
+		</result>
+		<result>
+		  <url>http://url2google</url>
+		  <title>Title2google</title>
+		  <snippet>Snippet2google</snippet>
+		  <from>Google</from>
+		</result>
+		<result>
+		  <url>http://url3google</url>
+		  <title>Title3google</title>
+		  <snippet>Snippet3google</snippet>
+		  <from></from>
+		</result>
+		<result>
+		  <url>http://url4google</url>
+		  <title>Title4google</title>
+		  <snippet>Snippet4google</snippet>
+		</result>
+		<result>
+		  <url>http://url4google</url>
+		  <title>Title5google</title>
+		  <snippet>Snippet5google</snippet>
+		</result>
+		<result>
+		  <url>http://url4google</url>
+		  <title>Title6google</title>
+		  <snippet>Snippet6google</snippet>
+		</result>
+	      </goog:SearchEngineResultList>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+      <tes:partnerTrack name="MSN">
+	<tes:receiveSend service="fex:MSNSearchService" port="MSNSearchPort" operation="Search" xmlns:fex="http://schemas.microsoft.com/MSNSearch/2005/09/fex">
+	  <tes:send fault="false" delaySequence="2,0">
+	    <tes:data>
+	      <msn:Search>
+		<msn:Request>
+		  <msn:Requests>
+		    <msn:SearchRequest>
+		      <msn:AppID>Web</msn:AppID>
+		      <msn:Query>-3</msn:Query>
+		      <msn:CultureInfo>4</msn:CultureInfo>
+		      <msn:SafeSearch>Off</msn:SafeSearch>
+		      <msn:Flags>
+			<msn:SearchTag>
+			  <msn:Name>Title</msn:Name>
+			  <msn:Value>5</msn:Value>
+			</msn:SearchTag>
+		      </msn:Flags>
+		      <msn:SourceRequest>
+			<msn:Request>
+			  <msn:Source>Web</msn:Source>
+			  <msn:Offset>6</msn:Offset>
+			  <msn:Count>2</msn:Count>
+			  <msn:ResultFields>Url</msn:ResultFields>
+			</msn:Request>
+			<msn:Request>
+			  <msn:Source>News</msn:Source>
+			  <msn:Offset>3</msn:Offset>
+			  <msn:Count>2</msn:Count>
+			  <msn:ResultFields>Title</msn:ResultFields>
+			</msn:Request>
+		      </msn:SourceRequest>
+		    </msn:SearchRequest>
+		  </msn:Requests>
+		</msn:Request>
+	      </msn:Search>
+	    </tes:data>
+	  </tes:send>
+	  <tes:receive fault="false"/>
+	</tes:receiveSend>
+      </tes:partnerTrack>
+    </tes:testCase>
+
+
+  </tes:testCases>
+</tes:testSuite>

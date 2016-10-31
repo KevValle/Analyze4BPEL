@@ -1,0 +1,21 @@
+populationSize: 5
+maxOrder: 1
+executor: !!exec.BPELExecutor
+  testSuite: loanApprovalProcess.bpts
+  originalProgram: loanApprovalProcess.bpel
+  outputFile: loanApprovalProcess.bpel.out
+geneticOperators:
+  !!genetic.OrderMutationOperator       {scaleFactor: &pOMop 0.1, randomRange: 10} : {probability: *pOMop}
+  !!genetic.IndividualMutationOperator  {scaleFactor: &pIMOp 0.3, randomRange: 10} : {probability: *pIMOp}
+  !!genetic.OrderCrossoverOperator      {} : {probability: 0.2}
+  !!genetic.IndividualCrossoverOperator {} : {probability: 0.4}
+individualGenerators:
+  !!generate.UniformGenerator {} : {percent: 0.2}
+selectionOperators:
+  !!select.RouletteSelection  {} : {percent: 0.4}
+terminationConditions:
+  - !!term.PercentAllMutantsCondition {percent: 0.8}
+  - !!term.GenerationCountCondition   {count: 100}
+loggers:
+  - !!log.MessageLogger {console: true, file: }
+  - !!log.HofLogger {console: false, file: hof.txt}
